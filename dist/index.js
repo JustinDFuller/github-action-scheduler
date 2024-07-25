@@ -24980,6 +24980,14 @@ module.exports = require("fs");
 
 /***/ }),
 
+/***/ 3292:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs/promises");
+
+/***/ }),
+
 /***/ 3685:
 /***/ ((module) => {
 
@@ -26806,7 +26814,7 @@ module.exports = parseParams
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const fs = (__nccwpck_require__(7147).fsPromises);
+const fs = __nccwpck_require__(3292);
 const core = __nccwpck_require__(2186);
 // const github = require('@actions/github');
 

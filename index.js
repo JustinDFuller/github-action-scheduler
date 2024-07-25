@@ -1,4 +1,4 @@
-const fs = require('fs').fsPromises;
+const fs = require('fs/promises');
 const core = require('@actions/core');
 // const github = require('@actions/github');
 
