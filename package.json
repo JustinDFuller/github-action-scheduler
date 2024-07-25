@@ -1,0 +1,28 @@
+{
+  "name": "schedule-branch-lock",
+  "version": "0.0.0",
+  "description": "Github Action to Lock a Branch on a Schedule",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/justindfuller/schedule-branch-lock"
+  },
+  "keywords": [
+    "Github",
+    "Action",
+    "Lock",
+    "Branch",
+    "Branch",
+    "Protection",
+    "Schedule"
+  ],
+  "author": "Justin Fuller <me@justindfuller.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0"
+  }
+}

@@ -1,0 +1,22 @@
+name: 'Schedule Branch Lock'
+description: 'Lock a Branch on a Schedule'
+inputs:
+  branch:
+    description: 'Which Branch to Lock'
+    required: true
+  schedule-file-path:
+    description: 'The path to the schedule file'
+    required: true
+outputs:
+  locked:
+    description: 'If the Branch is Locked (true or false)'
+  unlocked:
+    description: 'If the Branch is Unlocked (true or false)'
+  branch:
+    description: 'The name of the branch'
+runs:
+  using: 'node20'
+  main: 'index.js'
+branding:
+  icon: 'lock'
+  color: 'red'

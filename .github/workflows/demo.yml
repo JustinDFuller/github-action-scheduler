@@ -1,0 +1,14 @@
+name: GitHub Actions Demo
+on: [push]
+jobs:
+  Schedule
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Schedule Branch Lock
+        uses: JustinDFuller/schedule-branch-lock
+        with:
+          branch: main
+          schedule-file-path: ./schedule.json
