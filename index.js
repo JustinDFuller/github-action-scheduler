@@ -20,6 +20,14 @@ async function main() {
         const scheduleFile = await fs.readFile(scheduleFilePath, 'utf-8')
     
         core.notice(`Schedule file: ${scheduleFile}`);
+
+        const schedule = JSON.parse(schedule);
+
+        if (!schedule || !schedule.locks || schedule.locks.length === 0) {
+            throw new Error("No Lock Schedule Found.");
+        }
+
+        core.notice(`Schedules: ${JSON.stringify(schedule.locks, null, 2)}`);
     } catch (error) {
         core.setFailed(error.message);
     }
