@@ -26912,14 +26912,14 @@ async function main() {
           startDay = startDay.tz(startTimeZone);
         }
 
-        startDay = DAYS[startDay.getDay()];
+        startDay = DAYS[startDay.day()];
 
         let endDay = dayjs();
         if (day.startTimeZone) {
           endDay = endDay.tz(startTimeZone);
         }
 
-        endDay = DAYS[endDay.getDay()];
+        endDay = DAYS[endDay.day()];
 
         if (startDay !== day && endDay !== day) {
           core.notice(`StartDay=${startDay} EndDay=${endDay} day=${day}`);
