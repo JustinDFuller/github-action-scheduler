@@ -1,6 +1,7 @@
 {
   "locks": [
     {
+      "name": "weekdays",
       "days": ["monday", "tuesday", "wednesday", "thursday", "friday"],
       "startHour": 17,
       "startTimezone": "America/New_York",
