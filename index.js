@@ -122,6 +122,12 @@ function main() {
                             if (currentDateStart.isAfter(startDate)) {
                                 core.notice("AFTER start date");
                             }
+                            if (currentDateStart.isBefore(startDate)) {
+                                core.notice("BEFORE start date");
+                            }
+                            if (currentDateEnd.isAfter(endDate)) {
+                                core.notice("AFTER end date");
+                            }
                             if (currentDateEnd.isBefore(endDate)) {
                                 core.notice("BEFORE end date");
                             }
