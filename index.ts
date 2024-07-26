@@ -9,35 +9,29 @@ async function main() {
     dayjs.extend(utc);
     dayjs.extend(timezone);
 
-    const branch = core.getInput("branch");
-    if (!branch) {
-      throw new Error(`Expected a branch to lock. Got: "${branch}"`);
-    }
-
-    const scheduleString = core.getInput("schedule");
-    if (!scheduleString) {
+    const configString = core.getInput("schedule");
+    if (!configString) {
       throw new Error(
-        `Expected a schedule string input. Got: "${scheduleString}`,
+        `Expected a schedule string input. Got: "${configString}`,
       );
     }
 
-    core.notice(`Branch: ${branch}`);
-    core.notice(`Schedule File Path: ${scheduleString}`);
+    core.notice(`Schedule Config: ${configString}`);
 
-    const config: Config = JSON.parse(scheduleString);
+    const config: Config = JSON.parse(configString);
 
     if (!config || !config.schedules || config.schedules.length === 0) {
       throw new Error("No Schedule Found.");
     }
 
-    core.notice(`Schedules: ${JSON.stringify(config.schedules, null, 2)}`);
+    core.notice(`Parsed Config: ${JSON.stringify(config, null, 2)}`);
 
     for (const s of config.schedules) {
       const schedule: Schedule = s;
 
       if (!schedule.name) {
         throw new Error(
-          `Missing Lock Name: ${JSON.stringify(schedule, null, 2)}`,
+          `Missing Schedule Name: ${JSON.stringify(schedule, null, 2)}`,
         );
       }
 

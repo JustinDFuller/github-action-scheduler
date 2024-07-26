@@ -50,31 +50,26 @@ var timezone = __nccwpck_require__(4761);
 var schedule_1 = __nccwpck_require__(3532);
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var branch, scheduleString, config, _i, _a, s, schedule, _loop_1, _b, _c, d;
+        var configString, config, _i, _a, s, schedule, _loop_1, _b, _c, d;
         return __generator(this, function (_d) {
             try {
                 dayjs.extend(utc);
                 dayjs.extend(timezone);
-                branch = core.getInput("branch");
-                if (!branch) {
-                    throw new Error("Expected a branch to lock. Got: \"".concat(branch, "\""));
+                configString = core.getInput("schedule");
+                if (!configString) {
+                    throw new Error("Expected a schedule string input. Got: \"".concat(configString));
                 }
-                scheduleString = core.getInput("schedule");
-                if (!scheduleString) {
-                    throw new Error("Expected a schedule string input. Got: \"".concat(scheduleString));
-                }
-                core.notice("Branch: ".concat(branch));
-                core.notice("Schedule File Path: ".concat(scheduleString));
-                config = JSON.parse(scheduleString);
+                core.notice("Schedule Config: ".concat(configString));
+                config = JSON.parse(configString);
                 if (!config || !config.schedules || config.schedules.length === 0) {
                     throw new Error("No Schedule Found.");
                 }
-                core.notice("Schedules: ".concat(JSON.stringify(config.schedules, null, 2)));
+                core.notice("Parsed Config: ".concat(JSON.stringify(config, null, 2)));
                 for (_i = 0, _a = config.schedules; _i < _a.length; _i++) {
                     s = _a[_i];
                     schedule = s;
                     if (!schedule.name) {
-                        throw new Error("Missing Lock Name: ".concat(JSON.stringify(schedule, null, 2)));
+                        throw new Error("Missing Schedule Name: ".concat(JSON.stringify(schedule, null, 2)));
                     }
                     core.notice("Processing \"".concat(schedule.name, "\""));
                     if (!schedule.days) {
