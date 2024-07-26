@@ -26901,9 +26901,9 @@ async function main() {
 
         core.notice(`Processing ${day}`);
 
-        if (!DAYS[day.toLowerCase()]) {
+        if (!DAYSl.includes(day.toLowerCase())) {
           throw new Error(
-            `Unexpected day: "${day}. Acceptable options are: ${JSON.stringify(DAYS, null, 2)}`,
+            `Unexpected day: "${day}". Acceptable options are: ${JSON.stringify(DAYS, null, 2)}`,
           );
         }
 
