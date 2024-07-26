@@ -3,39 +3,7 @@ import * as core from "@actions/core";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
-
-type Schedule = {
-  readonly locks: Lock[];
-};
-
-type Lock = {
-  readonly name: string;
-  readonly days: Day[];
-  readonly startHour: number;
-  readonly startTimeZone?: string;
-  readonly endHour: number;
-  readonly endTimeZone?: string;
-};
-
-enum Day {
-  sunday,
-  monday,
-  tuesday,
-  wednesday,
-  thursday,
-  friday,
-  saturday,
-}
-
-const DAYS: string[] = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "satirday",
-];
+import { Schedule, Day, DAYS } from "./schedule";
 
 async function main() {
   try {
@@ -98,7 +66,7 @@ async function main() {
           startDate = startDate.tz(lock.startTimeZone);
         }
 
-        const startDay = Day[startDate.day()];
+        const startDay = DAYS[startDate.day()];
         if (!startDay) {
           throw new Error(`Unexpected Start Day: ${startDate.day()}`);
         }
@@ -108,21 +76,23 @@ async function main() {
           endDate = endDate.tz(lock.endTimeZone);
         }
 
-        const endDay = Day[endDate.day()];
+        const endDay = DAYS[endDate.day()];
         if (!endDay) {
           throw new Error(`Unexpected Start Day: ${endDate.day()}`);
         }
 
-        if (startDay !== DAYS[day] && endDay !== DAYS[day]) {
+        const wantDay = DAYS[day];
+
+        if (startDay !== wantDay && endDay !== wantDay) {
           core.notice(
-            `Day not matched. StartDay=${startDay} EndDay=${endDay} day=${DAYS[day]}`,
+            `Day not matched. StartDay=${startDay} EndDay=${endDay} day=${wantDay}`,
           );
 
           continue;
         }
 
         core.notice(
-          `Day matched. StartDay=${startDay} EndDay=${endDay} day=${day}`,
+          `Day matched. StartDay=${startDay} EndDay=${endDay} day=${wantDay}`,
         );
       }
     }

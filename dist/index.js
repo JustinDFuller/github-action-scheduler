@@ -48,28 +48,10 @@ var core = __nccwpck_require__(2186);
 var dayjs = __nccwpck_require__(7401);
 var utc = __nccwpck_require__(4359);
 var timezone = __nccwpck_require__(4761);
-var Day;
-(function (Day) {
-    Day[Day["sunday"] = 0] = "sunday";
-    Day[Day["monday"] = 1] = "monday";
-    Day[Day["tuesday"] = 2] = "tuesday";
-    Day[Day["wednesday"] = 3] = "wednesday";
-    Day[Day["thursday"] = 4] = "thursday";
-    Day[Day["friday"] = 5] = "friday";
-    Day[Day["saturday"] = 6] = "saturday";
-})(Day || (Day = {}));
-var DAYS = [
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "satirday",
-];
+var schedule_1 = __nccwpck_require__(3532);
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var branch, scheduleFilePath, scheduleFile, schedule, _i, _a, lock, _b, _c, day, startDate, startDay, endDate, endDay, error_1;
+        var branch, scheduleFilePath, scheduleFile, schedule, _i, _a, lock, _b, _c, day, startDate, startDay, endDate, endDay, wantDay, error_1;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
@@ -110,14 +92,14 @@ function main() {
                                 throw new Error("Expected a day, got: \"".concat(day));
                             }
                             core.notice("Processing \"".concat(lock.name, "\".\"").concat(day, "\""));
-                            if (!Day[day]) {
-                                throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(Day, null, 2), ". Days are case-sensitive."));
+                            if (!schedule_1.Day[day]) {
+                                throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(schedule_1.Day, null, 2), ". Days are case-sensitive."));
                             }
                             startDate = dayjs();
                             if (lock.startTimeZone) {
                                 startDate = startDate.tz(lock.startTimeZone);
                             }
-                            startDay = Day[startDate.day()];
+                            startDay = schedule_1.DAYS[startDate.day()];
                             if (!startDay) {
                                 throw new Error("Unexpected Start Day: ".concat(startDate.day()));
                             }
@@ -125,15 +107,16 @@ function main() {
                             if (lock.endTimeZone) {
                                 endDate = endDate.tz(lock.endTimeZone);
                             }
-                            endDay = Day[endDate.day()];
+                            endDay = schedule_1.DAYS[endDate.day()];
                             if (!endDay) {
                                 throw new Error("Unexpected Start Day: ".concat(endDate.day()));
                             }
-                            if (startDay !== DAYS[day] && endDay !== DAYS[day]) {
-                                core.notice("Day not matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(DAYS[day]));
+                            wantDay = schedule_1.DAYS[day];
+                            if (startDay !== wantDay && endDay !== wantDay) {
+                                core.notice("Day not matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(wantDay));
                                 continue;
                             }
-                            core.notice("Day matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(day));
+                            core.notice("Day matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(wantDay));
                         }
                     }
                     return [3 /*break*/, 3];
@@ -25084,6 +25067,36 @@ function version(uuid) {
 
 var _default = version;
 exports["default"] = _default;
+
+/***/ }),
+
+/***/ 3532:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DAYS = exports.Day = void 0;
+var Day;
+(function (Day) {
+    Day[Day["sunday"] = 0] = "sunday";
+    Day[Day["monday"] = 1] = "monday";
+    Day[Day["tuesday"] = 2] = "tuesday";
+    Day[Day["wednesday"] = 3] = "wednesday";
+    Day[Day["thursday"] = 4] = "thursday";
+    Day[Day["friday"] = 5] = "friday";
+    Day[Day["saturday"] = 6] = "saturday";
+})(Day || (exports.Day = Day = {}));
+exports.DAYS = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+];
+
 
 /***/ }),
 
