@@ -26837,7 +26837,7 @@ async function main() {
     
         core.notice(`Schedule file: ${scheduleFile}`);
 
-        const schedule = JSON.parse(schedule);
+        const schedule = JSON.parse(scheduleFile);
 
         if (!schedule || !schedule.locks || schedule.locks.length === 0) {
             throw new Error("No Lock Schedule Found.");
