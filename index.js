@@ -123,7 +123,7 @@ function main() {
                                 throw new Error("Unexpected Start Day: ".concat(endDate.day()));
                             }
                             if (startDay !== DAYS[day] && endDay !== DAYS[day]) {
-                                core.notice("Day not matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(day));
+                                core.notice("Day not matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(DAYS[day]));
                                 continue;
                             }
                             core.notice("Day matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(day));

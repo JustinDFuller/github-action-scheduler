@@ -115,7 +115,7 @@ async function main() {
 
         if (startDay !== DAYS[day] && endDay !== DAYS[day]) {
           core.notice(
-            `Day not matched. StartDay=${startDay} EndDay=${endDay} day=${day}`,
+            `Day not matched. StartDay=${startDay} EndDay=${endDay} day=${DAYS[day]}`,
           );
 
           continue;
