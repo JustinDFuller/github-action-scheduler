@@ -4,9 +4,9 @@
       "name": "weekdays",
       "days": ["monday", "tuesday", "wednesday", "thursday", "friday"],
       "startHour": 17,
-      "startTimezone": "America/New_York",
+      "startTimeZone": "America/New_York",
       "endHour": "9",
-      "endTimezone": "America/Los_Angeles"
+      "endTimeZone": "America/Los_Angeles"
     }
   ]
 }
