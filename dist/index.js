@@ -26907,14 +26907,14 @@ async function main() {
           );
         }
 
-        let startDay = daysjs();
+        let startDay = dayjs();
         if (day.startTimeZone) {
           startDay = startDay.tz(startTimeZone);
         }
 
         startDay = DAYS[startDay.getDay()];
 
-        let endDay = daysjs();
+        let endDay = dayjs();
         if (day.startTimeZone) {
           endDay = endDay.tz(startTimeZone);
         }
