@@ -64,7 +64,7 @@ async function main() {
 
         core.notice(`Processing ${day}`);
 
-        if (!DAYSl.includes(day.toLowerCase())) {
+        if (!DAYS.includes(day.toLowerCase())) {
           throw new Error(
             `Unexpected day: "${day}". Acceptable options are: ${JSON.stringify(DAYS, null, 2)}`,
           );
