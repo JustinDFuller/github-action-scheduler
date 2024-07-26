@@ -1,9 +1,8 @@
-import { promises as fs } from "fs";
 import * as core from "@actions/core";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
-import { Schedule, Lock, Day, DAYS } from "./schedule";
+import { Config, Schedule, Day, DAYS } from "./schedule";
 
 async function main() {
   try {
@@ -15,49 +14,47 @@ async function main() {
       throw new Error(`Expected a branch to lock. Got: "${branch}"`);
     }
 
-    const scheduleFilePath = core.getInput("schedule-file-path");
-    if (!scheduleFilePath) {
+    const scheduleString = core.getInput("schedule");
+    if (!scheduleString) {
       throw new Error(
-        `Expected a schedule file path. Got: "${scheduleFilePath}`,
+        `Expected a schedule string input. Got: "${scheduleString}`,
       );
     }
 
     core.notice(`Branch: ${branch}`);
-    core.notice(`Schedule File Path: ${scheduleFilePath}`);
+    core.notice(`Schedule File Path: ${scheduleString}`);
 
-    const scheduleFile = await fs.readFile(scheduleFilePath, "utf-8");
+    const config: Config = JSON.parse(scheduleString);
 
-    core.notice(`Schedule file: ${scheduleFile}`);
-
-    const schedule: Schedule = JSON.parse(scheduleFile);
-
-    if (!schedule || !schedule.locks || schedule.locks.length === 0) {
-      throw new Error("No Lock Schedule Found.");
+    if (!config || !config.schedules || config.schedules.length === 0) {
+      throw new Error("No Schedule Found.");
     }
 
-    core.notice(`Schedules: ${JSON.stringify(schedule.locks, null, 2)}`);
+    core.notice(`Schedules: ${JSON.stringify(config.schedules, null, 2)}`);
 
-    for (const l of schedule.locks) {
-      const lock: Lock = l;
+    for (const s of config.schedules) {
+      const schedule: Schedule = s;
 
-      if (!lock.name) {
-        throw new Error(`Missing Lock Name: ${JSON.stringify(lock, null, 2)}`);
+      if (!schedule.name) {
+        throw new Error(
+          `Missing Lock Name: ${JSON.stringify(schedule, null, 2)}`,
+        );
       }
 
-      core.notice(`Processing "${lock.name}"`);
+      core.notice(`Processing "${schedule.name}"`);
 
-      if (!lock.days) {
-        throw new Error(`Missing Lock days: ${lock.name}`);
+      if (!schedule.days) {
+        throw new Error(`Missing Lock days: ${schedule.name}`);
       }
 
-      for (const d of lock.days) {
+      for (const d of schedule.days) {
         const day: Day = d;
 
         if (!day) {
           throw new Error(`Expected a day, got: "${day}`);
         }
 
-        core.notice(`Processing "${lock.name}"."${day}"`);
+        core.notice(`Processing "${schedule.name}"."${day}"`);
 
         if (!Day[day]) {
           throw new Error(
@@ -65,65 +62,17 @@ async function main() {
           );
         }
 
-        let startDate = dayjs().hour(lock.startHour);
-        if (lock.startTimeZone) {
-          startDate = startDate.tz(lock.startTimeZone);
-        }
-
-        const startDay = DAYS[startDate.day()];
-        if (!startDay) {
-          throw new Error(`Unexpected Start Day: ${startDate.day()}`);
-        }
-
-        let endDate = dayjs().hour(lock.endHour);
-        if (lock.endTimeZone) {
-          endDate = endDate.tz(lock.endTimeZone);
-        }
-
-        const endDay = DAYS[endDate.day()];
-        if (!endDay) {
-          throw new Error(`Unexpected Start Day: ${endDate.day()}`);
-        }
-
+        const now = dayjs().tz(config.timeZone);
         const wantDay = DAYS.find((d) => d === day);
+        const gotDay = DAYS[now.day()];
 
-        if (startDay !== wantDay && endDay !== wantDay) {
-          core.notice(
-            `Day not matched. StartDay=${startDay} EndDay=${endDay} day=${wantDay}`,
-          );
+        if (wantDay !== gotDay) {
+          core.notice(`Day not matched: want=${wantDay} got=${gotDay}`);
 
           continue;
         }
 
-        core.notice(
-          `Day matched. StartDay=${startDay} EndDay=${endDay} day=${wantDay}`,
-        );
-
-        let currentDateStart = dayjs();
-        if (lock.startTimeZone) {
-          currentDateStart = currentDateStart.tz(lock.startTimeZone);
-        }
-
-        let currentDateEnd = dayjs();
-        if (lock.endTimeZone) {
-          currentDateEnd = currentDateEnd.tz(lock.endTimeZone);
-        }
-
-        if (currentDateStart.isAfter(startDate)) {
-          core.notice("AFTER start date");
-        }
-
-        if (currentDateStart.isBefore(startDate)) {
-          core.notice("BEFORE start date");
-        }
-
-        if (currentDateEnd.isAfter(endDate)) {
-          core.notice("AFTER end date");
-        }
-
-        if (currentDateEnd.isBefore(endDate)) {
-          core.notice("BEFORE end date");
-        }
+        core.notice(`Day matched: want=${wantDay} got=${gotDay}`);
       }
     }
   } catch (error) {

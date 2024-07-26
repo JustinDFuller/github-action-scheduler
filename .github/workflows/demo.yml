@@ -10,5 +10,4 @@ jobs:
       - name: Schedule Branch Lock
         uses: ./
         with:
-          branch: main
-          schedule-file-path: ./schedule.json
+          schedule: ${{ vars.SCHEDULE }}

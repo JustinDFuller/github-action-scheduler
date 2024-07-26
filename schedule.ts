@@ -1,14 +1,13 @@
-export type Schedule = {
-  readonly locks: Lock[];
+export type Config = {
+  readonly timeZone: string;
+  readonly schedules: Schedule[];
 };
 
-export type Lock = {
+export type Schedule = {
   readonly name: string;
   readonly days: Day[];
   readonly startHour: number;
-  readonly startTimeZone?: string;
   readonly endHour: number;
-  readonly endTimeZone?: string;
 };
 
 export enum Day {

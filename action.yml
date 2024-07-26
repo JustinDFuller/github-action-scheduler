@@ -1,22 +1,15 @@
-name: 'Schedule Branch Lock'
-description: 'Lock a Branch on a Schedule'
+name: "Schedule"
+description: "Execute a Schedule"
 inputs:
-  branch:
-    description: 'Which Branch to Lock'
-    required: true
-  schedule-file-path:
-    description: 'The path to the schedule file'
+  variable:
+    description: "The Github Variable that contains the schedule JSON"
     required: true
 outputs:
-  locked:
-    description: 'If the Branch is Locked (true or false)'
-  unlocked:
-    description: 'If the Branch is Unlocked (true or false)'
-  branch:
-    description: 'The name of the branch'
+  schedule:
+    description: "The matched schedule."
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: "node20"
+  main: "dist/index.js"
 branding:
-  icon: 'lock'
-  color: 'red'
+  icon: "calendar"
+  color: "orange"

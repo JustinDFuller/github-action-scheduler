@@ -43,7 +43,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var fs_1 = __nccwpck_require__(7147);
 var core = __nccwpck_require__(2186);
 var dayjs = __nccwpck_require__(7401);
 var utc = __nccwpck_require__(4359);
@@ -51,106 +50,64 @@ var timezone = __nccwpck_require__(4761);
 var schedule_1 = __nccwpck_require__(3532);
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var branch, scheduleFilePath, scheduleFile, schedule, _i, _a, l, lock, _loop_1, _b, _c, d, error_1;
+        var branch, scheduleString, config, _i, _a, s, schedule, _loop_1, _b, _c, d;
         return __generator(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    _d.trys.push([0, 2, , 3]);
-                    dayjs.extend(utc);
-                    dayjs.extend(timezone);
-                    branch = core.getInput("branch");
-                    if (!branch) {
-                        throw new Error("Expected a branch to lock. Got: \"".concat(branch, "\""));
+            try {
+                dayjs.extend(utc);
+                dayjs.extend(timezone);
+                branch = core.getInput("branch");
+                if (!branch) {
+                    throw new Error("Expected a branch to lock. Got: \"".concat(branch, "\""));
+                }
+                scheduleString = core.getInput("schedule");
+                if (!scheduleString) {
+                    throw new Error("Expected a schedule string input. Got: \"".concat(scheduleString));
+                }
+                core.notice("Branch: ".concat(branch));
+                core.notice("Schedule File Path: ".concat(scheduleString));
+                config = JSON.parse(scheduleString);
+                if (!config || !config.schedules || config.schedules.length === 0) {
+                    throw new Error("No Schedule Found.");
+                }
+                core.notice("Schedules: ".concat(JSON.stringify(config.schedules, null, 2)));
+                for (_i = 0, _a = config.schedules; _i < _a.length; _i++) {
+                    s = _a[_i];
+                    schedule = s;
+                    if (!schedule.name) {
+                        throw new Error("Missing Lock Name: ".concat(JSON.stringify(schedule, null, 2)));
                     }
-                    scheduleFilePath = core.getInput("schedule-file-path");
-                    if (!scheduleFilePath) {
-                        throw new Error("Expected a schedule file path. Got: \"".concat(scheduleFilePath));
+                    core.notice("Processing \"".concat(schedule.name, "\""));
+                    if (!schedule.days) {
+                        throw new Error("Missing Lock days: ".concat(schedule.name));
                     }
-                    core.notice("Branch: ".concat(branch));
-                    core.notice("Schedule File Path: ".concat(scheduleFilePath));
-                    return [4 /*yield*/, fs_1.promises.readFile(scheduleFilePath, "utf-8")];
-                case 1:
-                    scheduleFile = _d.sent();
-                    core.notice("Schedule file: ".concat(scheduleFile));
-                    schedule = JSON.parse(scheduleFile);
-                    if (!schedule || !schedule.locks || schedule.locks.length === 0) {
-                        throw new Error("No Lock Schedule Found.");
-                    }
-                    core.notice("Schedules: ".concat(JSON.stringify(schedule.locks, null, 2)));
-                    for (_i = 0, _a = schedule.locks; _i < _a.length; _i++) {
-                        l = _a[_i];
-                        lock = l;
-                        if (!lock.name) {
-                            throw new Error("Missing Lock Name: ".concat(JSON.stringify(lock, null, 2)));
+                    _loop_1 = function (d) {
+                        var day = d;
+                        if (!day) {
+                            throw new Error("Expected a day, got: \"".concat(day));
                         }
-                        core.notice("Processing \"".concat(lock.name, "\""));
-                        if (!lock.days) {
-                            throw new Error("Missing Lock days: ".concat(lock.name));
+                        core.notice("Processing \"".concat(schedule.name, "\".\"").concat(day, "\""));
+                        if (!schedule_1.Day[day]) {
+                            throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(schedule_1.Day, null, 2), ". Days are case-sensitive."));
                         }
-                        _loop_1 = function (d) {
-                            var day = d;
-                            if (!day) {
-                                throw new Error("Expected a day, got: \"".concat(day));
-                            }
-                            core.notice("Processing \"".concat(lock.name, "\".\"").concat(day, "\""));
-                            if (!schedule_1.Day[day]) {
-                                throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(schedule_1.Day, null, 2), ". Days are case-sensitive."));
-                            }
-                            var startDate = dayjs().hour(lock.startHour);
-                            if (lock.startTimeZone) {
-                                startDate = startDate.tz(lock.startTimeZone);
-                            }
-                            var startDay = schedule_1.DAYS[startDate.day()];
-                            if (!startDay) {
-                                throw new Error("Unexpected Start Day: ".concat(startDate.day()));
-                            }
-                            var endDate = dayjs().hour(lock.endHour);
-                            if (lock.endTimeZone) {
-                                endDate = endDate.tz(lock.endTimeZone);
-                            }
-                            var endDay = schedule_1.DAYS[endDate.day()];
-                            if (!endDay) {
-                                throw new Error("Unexpected Start Day: ".concat(endDate.day()));
-                            }
-                            var wantDay = schedule_1.DAYS.find(function (d) { return d === day; });
-                            if (startDay !== wantDay && endDay !== wantDay) {
-                                core.notice("Day not matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(wantDay));
-                                return "continue";
-                            }
-                            core.notice("Day matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(wantDay));
-                            var currentDateStart = dayjs();
-                            if (lock.startTimeZone) {
-                                currentDateStart = currentDateStart.tz(lock.startTimeZone);
-                            }
-                            var currentDateEnd = dayjs();
-                            if (lock.endTimeZone) {
-                                currentDateEnd = currentDateEnd.tz(lock.endTimeZone);
-                            }
-                            if (currentDateStart.isAfter(startDate)) {
-                                core.notice("AFTER start date");
-                            }
-                            if (currentDateStart.isBefore(startDate)) {
-                                core.notice("BEFORE start date");
-                            }
-                            if (currentDateEnd.isAfter(endDate)) {
-                                core.notice("AFTER end date");
-                            }
-                            if (currentDateEnd.isBefore(endDate)) {
-                                core.notice("BEFORE end date");
-                            }
-                        };
-                        for (_b = 0, _c = lock.days; _b < _c.length; _b++) {
-                            d = _c[_b];
-                            _loop_1(d);
+                        var now = dayjs().tz(config.timeZone);
+                        var wantDay = schedule_1.DAYS.find(function (d) { return d === day; });
+                        var gotDay = schedule_1.DAYS[now.day()];
+                        if (wantDay !== gotDay) {
+                            core.notice("Day not matched: want=".concat(wantDay, " got=").concat(gotDay));
+                            return "continue";
                         }
+                        core.notice("Day matched: want=".concat(wantDay, " got=").concat(gotDay));
+                    };
+                    for (_b = 0, _c = schedule.days; _b < _c.length; _b++) {
+                        d = _c[_b];
+                        _loop_1(d);
                     }
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _d.sent();
-                    core.setFailed(error_1.message);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                }
             }
+            catch (error) {
+                core.setFailed(error.message);
+            }
+            return [2 /*return*/];
         });
     });
 }
