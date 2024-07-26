@@ -44,7 +44,7 @@ var timezone = require("dayjs/plugin/timezone");
 var schedule_1 = require("./schedule");
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var branch, scheduleFilePath, scheduleFile, schedule, _i, _a, lock, _b, _c, day, startDate, startDay, endDate, endDay, wantDay, error_1;
+        var branch, scheduleFilePath, scheduleFile, schedule, _i, _a, l, lock, _loop_1, _b, _c, d, error_1;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
@@ -71,7 +71,8 @@ function main() {
                     }
                     core.notice("Schedules: ".concat(JSON.stringify(schedule.locks, null, 2)));
                     for (_i = 0, _a = schedule.locks; _i < _a.length; _i++) {
-                        lock = _a[_i];
+                        l = _a[_i];
+                        lock = l;
                         if (!lock.name) {
                             throw new Error("Missing Lock Name: ".concat(JSON.stringify(lock, null, 2)));
                         }
@@ -79,8 +80,8 @@ function main() {
                         if (!lock.days) {
                             throw new Error("Missing Lock days: ".concat(lock.name));
                         }
-                        for (_b = 0, _c = lock.days; _b < _c.length; _b++) {
-                            day = _c[_b];
+                        _loop_1 = function (d) {
+                            var day = d;
                             if (!day) {
                                 throw new Error("Expected a day, got: \"".concat(day));
                             }
@@ -88,28 +89,32 @@ function main() {
                             if (!schedule_1.Day[day]) {
                                 throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(schedule_1.Day, null, 2), ". Days are case-sensitive."));
                             }
-                            startDate = dayjs();
+                            var startDate = dayjs();
                             if (lock.startTimeZone) {
                                 startDate = startDate.tz(lock.startTimeZone);
                             }
-                            startDay = schedule_1.DAYS[startDate.day()];
+                            var startDay = schedule_1.DAYS[startDate.day()];
                             if (!startDay) {
                                 throw new Error("Unexpected Start Day: ".concat(startDate.day()));
                             }
-                            endDate = dayjs();
+                            var endDate = dayjs();
                             if (lock.endTimeZone) {
                                 endDate = endDate.tz(lock.endTimeZone);
                             }
-                            endDay = schedule_1.DAYS[endDate.day()];
+                            var endDay = schedule_1.DAYS[endDate.day()];
                             if (!endDay) {
                                 throw new Error("Unexpected Start Day: ".concat(endDate.day()));
                             }
-                            wantDay = schedule_1.DAYS[day];
+                            var wantDay = schedule_1.DAYS.find(function (d) { return d === day; });
                             if (startDay !== wantDay && endDay !== wantDay) {
                                 core.notice("Day not matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(wantDay));
-                                continue;
+                                return "continue";
                             }
                             core.notice("Day matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(wantDay));
+                        };
+                        for (_b = 0, _c = lock.days; _b < _c.length; _b++) {
+                            d = _c[_b];
+                            _loop_1(d);
                         }
                     }
                     return [3 /*break*/, 3];

@@ -12,13 +12,13 @@ export type Lock = {
 };
 
 export enum Day {
-  sunday,
-  monday,
-  tuesday,
-  wednesday,
-  thursday,
-  friday,
-  saturday,
+  sunday = "sunday",
+  monday = "monday",
+  tuesday = "tuesday",
+  wednesday = "wednesday",
+  thursday = "thursday",
+  friday = "friday",
+  saturday = "saturday",
 }
 
 export const DAYS: string[] = [

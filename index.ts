@@ -3,7 +3,7 @@ import * as core from "@actions/core";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
-import { Schedule, Day, DAYS } from "./schedule";
+import { Schedule, Lock, Day, DAYS } from "./schedule";
 
 async function main() {
   try {
@@ -37,7 +37,9 @@ async function main() {
 
     core.notice(`Schedules: ${JSON.stringify(schedule.locks, null, 2)}`);
 
-    for (const lock of schedule.locks) {
+    for (const l of schedule.locks) {
+      const lock: Lock = l;
+
       if (!lock.name) {
         throw new Error(`Missing Lock Name: ${JSON.stringify(lock, null, 2)}`);
       }
@@ -48,7 +50,9 @@ async function main() {
         throw new Error(`Missing Lock days: ${lock.name}`);
       }
 
-      for (const day of lock.days) {
+      for (const d of lock.days) {
+        const day: Day = d;
+
         if (!day) {
           throw new Error(`Expected a day, got: "${day}`);
         }
@@ -81,7 +85,7 @@ async function main() {
           throw new Error(`Unexpected Start Day: ${endDate.day()}`);
         }
 
-        const wantDay = DAYS[day];
+        const wantDay = DAYS.find((d) => d === day);
 
         if (startDay !== wantDay && endDay !== wantDay) {
           core.notice(
