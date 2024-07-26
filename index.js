@@ -89,7 +89,7 @@ function main() {
                             if (!schedule_1.Day[day]) {
                                 throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(schedule_1.Day, null, 2), ". Days are case-sensitive."));
                             }
-                            var startDate = dayjs();
+                            var startDate = dayjs().hour(lock.startHour);
                             if (lock.startTimeZone) {
                                 startDate = startDate.tz(lock.startTimeZone);
                             }
@@ -97,7 +97,7 @@ function main() {
                             if (!startDay) {
                                 throw new Error("Unexpected Start Day: ".concat(startDate.day()));
                             }
-                            var endDate = dayjs();
+                            var endDate = dayjs().hour(lock.endHour);
                             if (lock.endTimeZone) {
                                 endDate = endDate.tz(lock.endTimeZone);
                             }
@@ -111,6 +111,20 @@ function main() {
                                 return "continue";
                             }
                             core.notice("Day matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(wantDay));
+                            var currentDateStart = dayjs();
+                            if (lock.startTimeZone) {
+                                currentDateStart = currentDateStart.tz(lock.startTimeZone);
+                            }
+                            var currentDateEnd = dayjs();
+                            if (lock.endTimeZone) {
+                                currentDateEnd = currentDateEnd.tz(lock.endTimeZone);
+                            }
+                            if (currentDateStart.isAfter(startDate)) {
+                                core.notice("AFTER start date");
+                            }
+                            if (currentDateEnd.isBefore(endDate)) {
+                                core.notice("BEFORE end date");
+                            }
                         };
                         for (_b = 0, _c = lock.days; _b < _c.length; _b++) {
                             d = _c[_b];

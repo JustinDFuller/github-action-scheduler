@@ -65,7 +65,7 @@ async function main() {
           );
         }
 
-        let startDate = dayjs();
+        let startDate = dayjs().hour(lock.startHour);
         if (lock.startTimeZone) {
           startDate = startDate.tz(lock.startTimeZone);
         }
@@ -75,7 +75,7 @@ async function main() {
           throw new Error(`Unexpected Start Day: ${startDate.day()}`);
         }
 
-        let endDate = dayjs();
+        let endDate = dayjs().hour(lock.endHour);
         if (lock.endTimeZone) {
           endDate = endDate.tz(lock.endTimeZone);
         }
@@ -98,6 +98,24 @@ async function main() {
         core.notice(
           `Day matched. StartDay=${startDay} EndDay=${endDay} day=${wantDay}`,
         );
+
+        let currentDateStart = dayjs();
+        if (lock.startTimeZone) {
+          currentDateStart = currentDateStart.tz(lock.startTimeZone);
+        }
+
+        let currentDateEnd = dayjs();
+        if (lock.endTimeZone) {
+          currentDateEnd = currentDateEnd.tz(lock.endTimeZone);
+        }
+
+        if (currentDateStart.isAfter(startDate)) {
+          core.notice("AFTER start date");
+        }
+
+        if (currentDateEnd.isBefore(endDate)) {
+          core.notice("BEFORE end date");
+        }
       }
     }
   } catch (error) {
