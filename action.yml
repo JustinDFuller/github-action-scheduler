@@ -1,8 +1,8 @@
 name: "Schedule"
 description: "Execute a Schedule"
 inputs:
-  schedule:
-    description: "The Schedule Config (JSON). See schedule.ts for structure."
+  config:
+    description: "The Schedule Config (JSON). See config.ts for structure."
     required: true
 outputs:
   schedule:

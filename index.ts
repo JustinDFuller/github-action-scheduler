@@ -2,18 +2,16 @@ import * as core from "@actions/core";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
-import { Config, Schedule, Day, DAYS } from "./schedule";
+import { Config, Schedule, Day, DAYS } from "./config";
 
 async function main() {
   try {
     dayjs.extend(utc);
     dayjs.extend(timezone);
 
-    const configString = core.getInput("schedule");
+    const configString = core.getInput("config");
     if (!configString) {
-      throw new Error(
-        `Expected a schedule string input. Got: "${configString}`,
-      );
+      throw new Error(`Expected a config string input. Got: "${configString}`);
     }
 
     core.debug(`Schedule Config: ${configString}`);

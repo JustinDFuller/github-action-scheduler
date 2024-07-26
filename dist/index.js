@@ -1,6 +1,36 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 5532:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DAYS = exports.Day = void 0;
+var Day;
+(function (Day) {
+    Day["sunday"] = "sunday";
+    Day["monday"] = "monday";
+    Day["tuesday"] = "tuesday";
+    Day["wednesday"] = "wednesday";
+    Day["thursday"] = "thursday";
+    Day["friday"] = "friday";
+    Day["saturday"] = "saturday";
+})(Day || (exports.Day = Day = {}));
+exports.DAYS = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+];
+
+
+/***/ }),
+
 /***/ 2932:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -47,7 +77,7 @@ var core = __nccwpck_require__(2186);
 var dayjs = __nccwpck_require__(7401);
 var utc = __nccwpck_require__(4359);
 var timezone = __nccwpck_require__(4761);
-var schedule_1 = __nccwpck_require__(3532);
+var config_1 = __nccwpck_require__(5532);
 function main() {
     return __awaiter(this, void 0, void 0, function () {
         var configString, config, _i, _a, s, schedule, _loop_1, _b, _c, d;
@@ -55,9 +85,9 @@ function main() {
             try {
                 dayjs.extend(utc);
                 dayjs.extend(timezone);
-                configString = core.getInput("schedule");
+                configString = core.getInput("config");
                 if (!configString) {
-                    throw new Error("Expected a schedule string input. Got: \"".concat(configString));
+                    throw new Error("Expected a config string input. Got: \"".concat(configString));
                 }
                 core.debug("Schedule Config: ".concat(configString));
                 config = JSON.parse(configString);
@@ -81,12 +111,12 @@ function main() {
                             throw new Error("Expected a day, got: \"".concat(day));
                         }
                         core.debug("Processing \"".concat(schedule.name, "\".\"").concat(day, "\""));
-                        if (!schedule_1.Day[day]) {
-                            throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(schedule_1.Day, null, 2), ". Days are case-sensitive."));
+                        if (!config_1.Day[day]) {
+                            throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(config_1.Day, null, 2), ". Days are case-sensitive."));
                         }
                         var now = dayjs().tz(config.timeZone);
-                        var wantDay = schedule_1.DAYS.find(function (d) { return d === day; });
-                        var gotDay = schedule_1.DAYS[now.day()];
+                        var wantDay = config_1.DAYS.find(function (d) { return d === day; });
+                        var gotDay = config_1.DAYS[now.day()];
                         if (wantDay !== gotDay) {
                             core.debug("Day not matched: want=".concat(wantDay, " got=").concat(gotDay));
                             return "continue";
@@ -25054,36 +25084,6 @@ function version(uuid) {
 
 var _default = version;
 exports["default"] = _default;
-
-/***/ }),
-
-/***/ 3532:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DAYS = exports.Day = void 0;
-var Day;
-(function (Day) {
-    Day["sunday"] = "sunday";
-    Day["monday"] = "monday";
-    Day["tuesday"] = "tuesday";
-    Day["wednesday"] = "wednesday";
-    Day["thursday"] = "thursday";
-    Day["friday"] = "friday";
-    Day["saturday"] = "saturday";
-})(Day || (exports.Day = Day = {}));
-exports.DAYS = [
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-];
-
 
 /***/ }),
 
