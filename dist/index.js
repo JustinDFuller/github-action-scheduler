@@ -80,7 +80,7 @@ var timezone = __nccwpck_require__(4761);
 var config_1 = __nccwpck_require__(5532);
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var configString, config, _i, _a, s, schedule, _loop_1, _b, _c, d;
+        var configString, config, _i, _a, s, schedule, now, start, end, _loop_1, _b, _c, d;
         return __generator(this, function (_d) {
             try {
                 dayjs.extend(utc);
@@ -102,6 +102,25 @@ function main() {
                         throw new Error("Missing Schedule Name: ".concat(JSON.stringify(schedule, null, 2)));
                     }
                     core.debug("Processing \"".concat(schedule.name, "\""));
+                    now = dayjs().tz(config.timeZone);
+                    if (schedule.date) {
+                        start = dayjs(schedule.date, "YYYY-MM-DD")
+                            .tz(config.timeZone)
+                            .hour(schedule.startHour);
+                        end = dayjs(schedule.date, "YYYY-MM-DD")
+                            .tz(config.timeZone)
+                            .hour(schedule.endHour);
+                        if (now.isAfter(start) && now.isBefore(end)) {
+                            core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" IS matched."));
+                            core.setOutput(schedule.name, true);
+                            continue;
+                        }
+                        else {
+                            core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" is NOT matched."));
+                            core.setOutput(schedule.name, false);
+                            continue;
+                        }
+                    }
                     if (!schedule.days) {
                         throw new Error("Missing Lock days: ".concat(schedule.name));
                     }
@@ -114,7 +133,6 @@ function main() {
                         if (!config_1.Day[day]) {
                             throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(config_1.Day, null, 2), ". Days are case-sensitive."));
                         }
-                        var now = dayjs().tz(config.timeZone);
                         var wantDay = config_1.DAYS.find(function (d) { return d === day; });
                         var gotDay = config_1.DAYS[now.day()];
                         if (wantDay !== gotDay) {

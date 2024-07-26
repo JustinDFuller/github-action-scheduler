@@ -5,7 +5,8 @@ export type Config = {
 
 export type Schedule = {
   readonly name: string;
-  readonly days: Day[];
+  readonly days?: Day[];
+  readonly date?: string;
   readonly startHour: number;
   readonly endHour: number;
 };

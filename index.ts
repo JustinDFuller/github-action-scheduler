@@ -35,6 +35,33 @@ async function main() {
 
       core.debug(`Processing "${schedule.name}"`);
 
+      const now = dayjs().tz(config.timeZone);
+
+      if (schedule.date) {
+        const start = dayjs(schedule.date, "YYYY-MM-DD")
+          .tz(config.timeZone)
+          .hour(schedule.startHour);
+        const end = dayjs(schedule.date, "YYYY-MM-DD")
+          .tz(config.timeZone)
+          .hour(schedule.endHour);
+
+        if (now.isAfter(start) && now.isBefore(end)) {
+          core.notice(
+            `The schedule "${schedule.name}" on date "${schedule.date}" IS matched.`,
+          );
+          core.setOutput(schedule.name, true);
+
+          continue;
+        } else {
+          core.notice(
+            `The schedule "${schedule.name}" on date "${schedule.date}" is NOT matched.`,
+          );
+          core.setOutput(schedule.name, false);
+
+          continue;
+        }
+      }
+
       if (!schedule.days) {
         throw new Error(`Missing Lock days: ${schedule.name}`);
       }
@@ -54,7 +81,6 @@ async function main() {
           );
         }
 
-        const now = dayjs().tz(config.timeZone);
         const wantDay = DAYS.find((d) => d === day);
         const gotDay = DAYS[now.day()];
 
