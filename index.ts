@@ -27,6 +27,16 @@ enum Day {
   saturday,
 }
 
+const DAYS: string[] = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "satirday",
+];
+
 async function main() {
   try {
     dayjs.extend(utc);
@@ -103,7 +113,7 @@ async function main() {
           throw new Error(`Unexpected Start Day: ${endDate.day()}`);
         }
 
-        if (startDay !== Day[day] && endDay !== Day[day]) {
+        if (startDay !== DAYS[day] && endDay !== DAYS[day]) {
           core.notice(
             `Day not matched. StartDay=${startDay} EndDay=${endDay} day=${day}`,
           );

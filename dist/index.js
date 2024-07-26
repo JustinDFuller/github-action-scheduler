@@ -58,6 +58,15 @@ var Day;
     Day[Day["friday"] = 5] = "friday";
     Day[Day["saturday"] = 6] = "saturday";
 })(Day || (Day = {}));
+var DAYS = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "satirday",
+];
 function main() {
     return __awaiter(this, void 0, void 0, function () {
         var branch, scheduleFilePath, scheduleFile, schedule, _i, _a, lock, _b, _c, day, startDate, startDay, endDate, endDay, error_1;
@@ -120,7 +129,7 @@ function main() {
                             if (!endDay) {
                                 throw new Error("Unexpected Start Day: ".concat(endDate.day()));
                             }
-                            if (startDay !== Day[day] && endDay !== Day[day]) {
+                            if (startDay !== DAYS[day] && endDay !== DAYS[day]) {
                                 core.notice("Day not matched. StartDay=".concat(startDay, " EndDay=").concat(endDay, " day=").concat(day));
                                 continue;
                             }
