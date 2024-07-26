@@ -16,7 +16,7 @@ async function main() {
       );
     }
 
-    core.notice(`Schedule Config: ${configString}`);
+    core.debug(`Schedule Config: ${configString}`);
 
     const config: Config = JSON.parse(configString);
 
@@ -24,7 +24,7 @@ async function main() {
       throw new Error("No Schedule Found.");
     }
 
-    core.notice(`Parsed Config: ${JSON.stringify(config, null, 2)}`);
+    core.debug(`Parsed Config: ${JSON.stringify(config, null, 2)}`);
 
     for (const s of config.schedules) {
       const schedule: Schedule = s;
@@ -35,7 +35,7 @@ async function main() {
         );
       }
 
-      core.notice(`Processing "${schedule.name}"`);
+      core.debug(`Processing "${schedule.name}"`);
 
       if (!schedule.days) {
         throw new Error(`Missing Lock days: ${schedule.name}`);
@@ -48,7 +48,7 @@ async function main() {
           throw new Error(`Expected a day, got: "${day}`);
         }
 
-        core.notice(`Processing "${schedule.name}"."${day}"`);
+        core.debug(`Processing "${schedule.name}"."${day}"`);
 
         if (!Day[day]) {
           throw new Error(
@@ -61,12 +61,27 @@ async function main() {
         const gotDay = DAYS[now.day()];
 
         if (wantDay !== gotDay) {
-          core.notice(`Day not matched: want=${wantDay} got=${gotDay}`);
+          core.debug(`Day not matched: want=${wantDay} got=${gotDay}`);
 
           continue;
         }
 
-        core.notice(`Day matched: want=${wantDay} got=${gotDay}`);
+        core.debug(`Day matched: want=${wantDay} got=${gotDay}`);
+
+        const start = dayjs().tz(config.timeZone).hour(schedule.startHour);
+        const end = dayjs().tz(config.timeZone).hour(schedule.endHour);
+
+        if (now.isAfter(start) && now.isBefore(end)) {
+          core.notice(
+            `The schedule ${schedule.name} on day ${day} is matched.`,
+          );
+          core.setOutput(schedule.name, true);
+        } else {
+          core.notice(
+            `The schedule ${schedule.name} on day ${day} is not matched.`,
+          );
+          core.setOutput(schedule.name, false);
+        }
       }
     }
   } catch (error) {
