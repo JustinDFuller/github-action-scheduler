@@ -73,12 +73,12 @@ async function main() {
 
         if (now.isAfter(start) && now.isBefore(end)) {
           core.notice(
-            `The schedule ${schedule.name} on day ${day} is matched.`,
+            `The schedule "${schedule.name}" on day "${day}" IS matched.`,
           );
           core.setOutput(schedule.name, true);
         } else {
           core.notice(
-            `The schedule ${schedule.name} on day ${day} is not matched.`,
+            `The schedule "${schedule.name}" on day "${day}" is NOT matched.`,
           );
           core.setOutput(schedule.name, false);
         }

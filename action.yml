@@ -1,8 +1,8 @@
 name: "Schedule"
 description: "Execute a Schedule"
 inputs:
-  variable:
-    description: "The Github Variable that contains the schedule JSON"
+  schedule:
+    description: "The Schedule Config (JSON). See schedule.ts for structure."
     required: true
 outputs:
   schedule:

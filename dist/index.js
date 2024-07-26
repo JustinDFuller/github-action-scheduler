@@ -95,11 +95,11 @@ function main() {
                         var start = dayjs().tz(config.timeZone).hour(schedule.startHour);
                         var end = dayjs().tz(config.timeZone).hour(schedule.endHour);
                         if (now.isAfter(start) && now.isBefore(end)) {
-                            core.notice("The schedule ".concat(schedule.name, " on day ").concat(day, " is matched."));
+                            core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" IS matched."));
                             core.setOutput(schedule.name, true);
                         }
                         else {
-                            core.notice("The schedule ".concat(schedule.name, " on day ").concat(day, " is not matched."));
+                            core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" is NOT matched."));
                             core.setOutput(schedule.name, false);
                         }
                     };
