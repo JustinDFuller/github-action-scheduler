@@ -24,7 +24,7 @@ jobs:
 
       - name: Lock branch
         uses: lyubick/action-branch-protection@v1
-        if: ${{ steps.schedule.outputs.lock == "true" }}
+        if: ${{ steps.schedule.outputs.lock == 'true' }}
         with:
           access-token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
           repository-name: JustinDFuller/schedule
@@ -33,7 +33,7 @@ jobs:
 
       - name: UnLock branch
         uses: lyubick/action-branch-protection@v1
-        if: ${{ steps.schedule.outputs.lock == "false" && steps.schedule.outputs.unlock == "true" }}
+        if: ${{ steps.schedule.outputs.lock == 'false' && steps.schedule.outputs.unlock == 'true' }}
         with:
           access-token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
           repository-name: JustinDFuller/schedule
