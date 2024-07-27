@@ -20,12 +20,28 @@ type ScheduleBase = {
   // every schedule MUST define a name. This is the only way it is accessible through step outputs.
   // The name in the output will format as UPPER_SNAKE_CASE.
   readonly name: string;
-  // startHour is the hour at the beginning of the window that the schedule can match.
+  // startHour is a REQUIRED field where you define the hour the window starts.
   // valid inputs are 0-24.
   readonly startHour: number;
-  // endHour is the end of the window that the schedule can match.
+  // startMinute is an OPTIONAL field where you can define the minute the window begins.
+  // valid inputs are 0-60.
+  // default is 0.
+  readonly startMinute?: number;
+  // startSecond is an OPTIONAL field where you can define the second the window begins.
+  // valid inputs are 0-60.
+  // default is 0.
+  readonly startSecond?: number;
+  // endHour is a REQUIRED field where you define the hour the window ends.
   // valid inputs are 0-24.
   readonly endHour: number;
+  // endMinute is an OPTIONAL field where you can define the minute the window ends.
+  // valid inputs are 0-60.
+  // default is 0.
+  readonly endMinute?: number;
+  // endSecond is an OPTIONAL field where you can define the second the window ends.
+  // valid inputs are 0-60.
+  // default is 0.
+  readonly endSecond?: number;
 };
 
 // A Day schedule matches one or more days of the week.

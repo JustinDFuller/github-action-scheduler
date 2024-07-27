@@ -83,10 +83,14 @@ async function main() {
         for (const date of schedule.dates) {
           const start = dayjs(date, "YYYY-MM-DD")
             .tz(config.timeZone)
-            .hour(schedule.startHour);
+            .hour(schedule.startHour)
+            .minute(schedule.startMinute || 0)
+            .second(schedule.startSecond || 0);
           const end = dayjs(date, "YYYY-MM-DD")
             .tz(config.timeZone)
-            .hour(schedule.endHour);
+            .hour(schedule.endHour)
+            .minute(schedule.endMinute || 0)
+            .second(schedule.endSecond || 0);
 
           if (now.isAfter(start) && now.isBefore(end)) {
             matched = true;
@@ -131,8 +135,16 @@ async function main() {
 
           core.debug(`Day matched: want=${wantDay} got=${gotDay}`);
 
-          const start = dayjs().tz(config.timeZone).hour(schedule.startHour);
-          const end = dayjs().tz(config.timeZone).hour(schedule.endHour);
+          const start = dayjs()
+            .tz(config.timeZone)
+            .hour(schedule.startHour)
+            .minute(schedule.startMinute || 0)
+            .second(schedule.startSecond || 0);
+          const end = dayjs()
+            .tz(config.timeZone)
+            .hour(schedule.endHour)
+            .minute(schedule.endMinute || 0)
+            .second(schedule.endSecond || 0);
 
           if (now.isAfter(start) && now.isBefore(end)) {
             matched = true;

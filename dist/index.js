@@ -141,10 +141,14 @@ function main() {
                             date = _c[_b];
                             start = dayjs(date, "YYYY-MM-DD")
                                 .tz(config.timeZone)
-                                .hour(schedule.startHour);
+                                .hour(schedule.startHour)
+                                .minute(schedule.startMinute || 0)
+                                .second(schedule.startSecond || 0);
                             end = dayjs(date, "YYYY-MM-DD")
                                 .tz(config.timeZone)
-                                .hour(schedule.endHour);
+                                .hour(schedule.endHour)
+                                .minute(schedule.endMinute || 0)
+                                .second(schedule.endSecond || 0);
                             if (now.isAfter(start) && now.isBefore(end)) {
                                 matched = true;
                             }
@@ -173,8 +177,16 @@ function main() {
                                 return "continue";
                             }
                             core.debug("Day matched: want=".concat(wantDay, " got=").concat(gotDay));
-                            var start = dayjs().tz(config.timeZone).hour(schedule.startHour);
-                            var end = dayjs().tz(config.timeZone).hour(schedule.endHour);
+                            var start = dayjs()
+                                .tz(config.timeZone)
+                                .hour(schedule.startHour)
+                                .minute(schedule.startMinute || 0)
+                                .second(schedule.startSecond || 0);
+                            var end = dayjs()
+                                .tz(config.timeZone)
+                                .hour(schedule.endHour)
+                                .minute(schedule.endMinute || 0)
+                                .second(schedule.endSecond || 0);
                             if (now.isAfter(start) && now.isBefore(end)) {
                                 matched = true;
                             }
