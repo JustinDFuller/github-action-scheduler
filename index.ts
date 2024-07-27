@@ -65,6 +65,8 @@ async function main() {
         );
       }
 
+      let matched = false;
+
       if (schedule.date) {
         const start = dayjs(schedule.date, "YYYY-MM-DD")
           .tz(config.timeZone)
@@ -74,15 +76,7 @@ async function main() {
           .hour(schedule.endHour);
 
         if (now.isAfter(start) && now.isBefore(end)) {
-          core.notice(
-            `The schedule "${schedule.name}" on date "${schedule.date}" IS matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
-          );
-          core.setOutput(formatOutput(schedule.name), true);
-        } else {
-          core.notice(
-            `The schedule "${schedule.name}" on date "${schedule.date}" is NOT matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
-          );
-          core.setOutput(formatOutput(schedule.name), false);
+          matched = true;
         }
       }
 
@@ -117,17 +111,21 @@ async function main() {
           const end = dayjs().tz(config.timeZone).hour(schedule.endHour);
 
           if (now.isAfter(start) && now.isBefore(end)) {
-            core.notice(
-              `The schedule "${schedule.name}" on day "${day}" IS matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
-            );
-            core.setOutput(formatOutput(schedule.name), true);
-          } else {
-            core.notice(
-              `The schedule "${schedule.name}" on day "${day}" is NOT matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
-            );
-            core.setOutput(formatOutput(schedule.name), false);
+            matched = true;
           }
         }
+      }
+
+      if (matched) {
+        core.notice(
+          `The schedule "${schedule.name}" IS matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
+        );
+        core.setOutput(formatOutput(schedule.name), true);
+      } else {
+        core.notice(
+          `The schedule "${schedule.name}" is NOT matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
+        );
+        core.setOutput(formatOutput(schedule.name), false);
       }
     }
   } catch (error) {

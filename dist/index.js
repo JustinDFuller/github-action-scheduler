@@ -98,7 +98,7 @@ function formatOutput(input) {
 }
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var configString, config, _i, _a, s, schedule, now, start, end, _loop_1, _b, _c, d;
+        var configString, config, _i, _a, s, schedule, now, matched, start, end, _loop_1, _b, _c, d;
         return __generator(this, function (_d) {
             try {
                 dayjs.extend(utc);
@@ -124,6 +124,7 @@ function main() {
                     if (!schedule.date && !schedule.days) {
                         throw new Error("A schedule must container either a date or days. Found neither.");
                     }
+                    matched = false;
                     if (schedule.date) {
                         start = dayjs(schedule.date, "YYYY-MM-DD")
                             .tz(config.timeZone)
@@ -132,12 +133,7 @@ function main() {
                             .tz(config.timeZone)
                             .hour(schedule.endHour);
                         if (now.isAfter(start) && now.isBefore(end)) {
-                            core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                            core.setOutput(formatOutput(schedule.name), true);
-                        }
-                        else {
-                            core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                            core.setOutput(formatOutput(schedule.name), false);
+                            matched = true;
                         }
                     }
                     if (schedule.days) {
@@ -160,18 +156,21 @@ function main() {
                             var start = dayjs().tz(config.timeZone).hour(schedule.startHour);
                             var end = dayjs().tz(config.timeZone).hour(schedule.endHour);
                             if (now.isAfter(start) && now.isBefore(end)) {
-                                core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                                core.setOutput(formatOutput(schedule.name), true);
-                            }
-                            else {
-                                core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                                core.setOutput(formatOutput(schedule.name), false);
+                                matched = true;
                             }
                         };
                         for (_b = 0, _c = schedule.days; _b < _c.length; _b++) {
                             d = _c[_b];
                             _loop_1(d);
                         }
+                    }
+                    if (matched) {
+                        core.notice("The schedule \"".concat(schedule.name, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                        core.setOutput(formatOutput(schedule.name), true);
+                    }
+                    else {
+                        core.notice("The schedule \"".concat(schedule.name, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                        core.setOutput(formatOutput(schedule.name), false);
                     }
                 }
             }
