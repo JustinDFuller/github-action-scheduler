@@ -126,11 +126,14 @@ function main() {
                     }
                     core.debug("Processing \"".concat(schedule.name, "\""));
                     now = dayjs().tz(config.timeZone);
-                    if (!("date" in schedule) && !("days" in schedule)) {
+                    if (!("dates" in schedule) && !("days" in schedule)) {
                         throw new Error("A schedule must container either a date or days. Found neither.");
                     }
                     matched = false;
                     if ("dates" in schedule) {
+                        if (!Array.isArray(schedule.dates)) {
+                            throw new Error("The dates field must be an array.");
+                        }
                         if (schedule.dates.length === 0) {
                             throw new Error("At least one date must be provided in the dates field.");
                         }
@@ -148,6 +151,9 @@ function main() {
                         }
                     }
                     if ("days" in schedule) {
+                        if (!Array.isArray(schedule.days)) {
+                            throw new Error("The days field must be an array.");
+                        }
                         if (schedule.days.length === 0) {
                             throw new Error("At least one day must be provided in the days field");
                         }
