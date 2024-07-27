@@ -170,3 +170,39 @@ There is a working demo in [.github/workflows/demo.yml](.github/workflows/demo.y
 ### Logs
 
 ![Screenshot 2024-07-27 11 45 34 AM](https://github.com/user-attachments/assets/431455fe-78fb-4ff6-860b-c57975194fe8)
+
+## Guide
+
+### Add a Schedule using Github Variables
+
+1. Open the `settings` page for your repository.
+
+<p align="center">
+    <img alt="Repository Menu" src="https://github.com/user-attachments/assets/080a2fe3-5901-4251-bf33-546c1ed3b5cb" width="350px" />
+</p>
+
+2. On the left-hand navigation menu, navigate to `Secrets and Variables` -> `Actions`.
+
+<p align="center">
+    <img alt="Left-Hand navigation menu" src="https://github.com/user-attachments/assets/307e8604-6c13-4e2b-b3c4-87099bc70f9c" width="350px" />
+</p>
+
+3. Switch to the `Variables` tab.
+
+<p align="center">
+    <img alt="Tabs" src="https://github.com/user-attachments/assets/4acd2ca5-f476-4118-9fd2-d64d13ba9987" width="350px" />
+</p>
+
+4. Click `New Repository Variable`.
+
+<p align="center">
+    <img alt="Variables Menu" src="https://github.com/user-attachments/assets/2bb438ed-28d9-4578-80f6-433e100a5c99" width="350px" />
+</p>
+
+5. In the `Name` field, enter the name you want to use to access this variable in your Github Action. In the `Value` field, enter the Schedule Config JSON.
+
+<p align="center">
+    <img alt="Variables Form" src="https://github.com/user-attachments/assets/9a074e64-6fc8-4339-8666-eac8f604c246" width="350px" />
+</p>
+
+Click Save. This example variable would be available as `${{ var.SCHEDULE }}`.
