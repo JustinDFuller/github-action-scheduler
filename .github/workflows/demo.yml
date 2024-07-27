@@ -18,7 +18,7 @@ jobs:
 
       - name: Schedule Branch Lock
         id: schedule
-        uses: JustinDFuller/github-action-scheduler@v1
+        uses: JustinDFuller/github-action-scheduler@v2
         with:
           config: ${{ vars.SCHEDULE }}
 
