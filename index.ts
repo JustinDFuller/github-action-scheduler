@@ -23,6 +23,10 @@ function formatOutput(input: string): string {
     output = output.slice(0, output.length - 1);
   }
 
+  if (output.startsWith("_")) {
+    output = output.slice(1);
+  }
+
   return output.toUpperCase();
 }
 
@@ -46,9 +50,7 @@ async function main() {
 
     core.debug(`Parsed Config: ${JSON.stringify(config, null, 2)}`);
 
-    for (const s of config.schedules) {
-      const schedule: Schedule = s;
-
+    for (const schedule of config.schedules) {
       if (!schedule.name) {
         throw new Error(
           `Missing Schedule Name: ${JSON.stringify(schedule, null, 2)}`,
@@ -59,7 +61,7 @@ async function main() {
 
       const now = dayjs().tz(config.timeZone);
 
-      if (!schedule.date && !schedule.days) {
+      if (!("date" in schedule) && !("days" in schedule)) {
         throw new Error(
           "A schedule must container either a date or days. Found neither.",
         );
@@ -67,20 +69,34 @@ async function main() {
 
       let matched = false;
 
-      if (schedule.date) {
-        const start = dayjs(schedule.date, "YYYY-MM-DD")
-          .tz(config.timeZone)
-          .hour(schedule.startHour);
-        const end = dayjs(schedule.date, "YYYY-MM-DD")
-          .tz(config.timeZone)
-          .hour(schedule.endHour);
+      if ("dates" in schedule) {
+        if (schedule.dates.length === 0) {
+          throw new Error(
+            "At least one date must be provided in the dates field.",
+          );
+        }
 
-        if (now.isAfter(start) && now.isBefore(end)) {
-          matched = true;
+        for (const date of schedule.dates) {
+          const start = dayjs(date, "YYYY-MM-DD")
+            .tz(config.timeZone)
+            .hour(schedule.startHour);
+          const end = dayjs(date, "YYYY-MM-DD")
+            .tz(config.timeZone)
+            .hour(schedule.endHour);
+
+          if (now.isAfter(start) && now.isBefore(end)) {
+            matched = true;
+          }
         }
       }
 
-      if (schedule.days) {
+      if ("days" in schedule) {
+        if (schedule.days.length === 0) {
+          throw new Error(
+            "At least one day must be provided in the days field",
+          );
+        }
+
         for (const d of schedule.days) {
           const day: Day = d;
 

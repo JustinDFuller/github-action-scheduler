@@ -8,6 +8,7 @@
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DAYS = exports.Day = void 0;
+// Day defines valid Day inputs.
 var Day;
 (function (Day) {
     Day["sunday"] = "sunday";
@@ -18,6 +19,8 @@ var Day;
     Day["friday"] = "friday";
     Day["saturday"] = "saturday";
 })(Day || (exports.Day = Day = {}));
+// Days provides a convenient mapping of day strings to numeric values.
+// This also expresses the allowed day values.
 exports.DAYS = [
     "sunday",
     "monday",
@@ -94,12 +97,15 @@ function formatOutput(input) {
     if (output.endsWith("_")) {
         output = output.slice(0, output.length - 1);
     }
+    if (output.startsWith("_")) {
+        output = output.slice(1);
+    }
     return output.toUpperCase();
 }
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var configString, config, _i, _a, s, schedule, now, matched, start, end, _loop_1, _b, _c, d;
-        return __generator(this, function (_d) {
+        var configString, config, _i, _a, schedule, now, matched, _b, _c, date, start, end, _loop_1, _d, _e, d;
+        return __generator(this, function (_f) {
             try {
                 dayjs.extend(utc);
                 dayjs.extend(timezone);
@@ -114,29 +120,37 @@ function main() {
                 }
                 core.debug("Parsed Config: ".concat(JSON.stringify(config, null, 2)));
                 for (_i = 0, _a = config.schedules; _i < _a.length; _i++) {
-                    s = _a[_i];
-                    schedule = s;
+                    schedule = _a[_i];
                     if (!schedule.name) {
                         throw new Error("Missing Schedule Name: ".concat(JSON.stringify(schedule, null, 2)));
                     }
                     core.debug("Processing \"".concat(schedule.name, "\""));
                     now = dayjs().tz(config.timeZone);
-                    if (!schedule.date && !schedule.days) {
+                    if (!("date" in schedule) && !("days" in schedule)) {
                         throw new Error("A schedule must container either a date or days. Found neither.");
                     }
                     matched = false;
-                    if (schedule.date) {
-                        start = dayjs(schedule.date, "YYYY-MM-DD")
-                            .tz(config.timeZone)
-                            .hour(schedule.startHour);
-                        end = dayjs(schedule.date, "YYYY-MM-DD")
-                            .tz(config.timeZone)
-                            .hour(schedule.endHour);
-                        if (now.isAfter(start) && now.isBefore(end)) {
-                            matched = true;
+                    if ("dates" in schedule) {
+                        if (schedule.dates.length === 0) {
+                            throw new Error("At least one date must be provided in the dates field.");
+                        }
+                        for (_b = 0, _c = schedule.dates; _b < _c.length; _b++) {
+                            date = _c[_b];
+                            start = dayjs(date, "YYYY-MM-DD")
+                                .tz(config.timeZone)
+                                .hour(schedule.startHour);
+                            end = dayjs(date, "YYYY-MM-DD")
+                                .tz(config.timeZone)
+                                .hour(schedule.endHour);
+                            if (now.isAfter(start) && now.isBefore(end)) {
+                                matched = true;
+                            }
                         }
                     }
-                    if (schedule.days) {
+                    if ("days" in schedule) {
+                        if (schedule.days.length === 0) {
+                            throw new Error("At least one day must be provided in the days field");
+                        }
                         _loop_1 = function (d) {
                             var day = d;
                             if (!day) {
@@ -159,8 +173,8 @@ function main() {
                                 matched = true;
                             }
                         };
-                        for (_b = 0, _c = schedule.days; _b < _c.length; _b++) {
-                            d = _c[_b];
+                        for (_d = 0, _e = schedule.days; _d < _e.length; _d++) {
+                            d = _e[_d];
                             _loop_1(d);
                         }
                     }

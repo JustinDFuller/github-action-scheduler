@@ -67,13 +67,15 @@ Here is an example JSON scheduled. Save it as a [Repository Github Variable](htt
     },
     {
       "name": "lock (custom)",
-      "date": "2024-07-26",
+      "dates": ["2024-07-26"],
       "startHour": 0,
       "endHour": 24
     }
   ]
 }
 ```
+
+The schema for the schedule JSON is in [`config.ts`](./config.ts).
 
 ### Workflow YAML
 
