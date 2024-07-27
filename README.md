@@ -116,3 +116,13 @@ jobs:
 ```
 
 There is a working demo in [.github/workflows/demo.yml](.github/workflows/demo.yml). You can see sample outputs [here](https://github.com/JustinDFuller/schedule/actions/workflows/demo.yml).
+
+## Examples
+
+### Annotations
+
+![Screenshot 2024-07-27 11 43 10 AM](https://github.com/user-attachments/assets/4979940d-66fc-4a0b-9714-5a7f565c15b4)
+
+### Logs
+
+![Screenshot 2024-07-27 11 45 34 AM](https://github.com/user-attachments/assets/431455fe-78fb-4ff6-860b-c57975194fe8)
