@@ -18,7 +18,7 @@ jobs:
 
       - name: Schedule Branch Lock
         id: schedule
-        uses: ./
+        uses: JustinDFuller/schedule@v1
         with:
           config: ${{ vars.SCHEDULE }}
 
