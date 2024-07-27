@@ -1,4 +1,4 @@
-# Schedule
+# Github Action Scheduler
 
 Github Action to run a Schedule.
 
