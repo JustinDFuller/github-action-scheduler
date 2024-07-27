@@ -22,6 +22,10 @@ jobs:
         with:
           config: ${{ vars.SCHEDULE }}
 
+      - run: echo steps.schedule.outputs.LOCK=${{ steps.schedule.outputs.LOCK }}
+      - run: echo steps.schedule.outputs.LOCK_WEEKENDS=${{ steps.schedule.outputs.LOCK_WEEKENDS }}
+      - run: echo steps.schedule.outputs.LOCK_CUSTOM=${{ steps.schedule.outputs.LOCK_CUSTOM }}
+
       - name: Lock branch
         uses: lyubick/action-branch-protection@v1
         if: ${{ steps.schedule.outputs.LOCK == 'true' }}
