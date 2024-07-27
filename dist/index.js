@@ -90,7 +90,11 @@ function formatOutput(input) {
             output += s;
         }
     }
-    return output.replace(/_+/g, "_");
+    output = output.replace(/_+/g, "_");
+    if (output.endsWith("_")) {
+        output = output.slice(0, output.length - 1);
+    }
+    return output.toUpperCase();
 }
 function main() {
     return __awaiter(this, void 0, void 0, function () {

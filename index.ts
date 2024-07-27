@@ -17,7 +17,13 @@ function formatOutput(input: string): string {
     }
   }
 
-  return output.replace(/_+/g, "_");
+  output = output.replace(/_+/g, "_");
+
+  if (output.endsWith("_")) {
+    output = output.slice(0, output.length - 1);
+  }
+
+  return output.toUpperCase();
 }
 
 async function main() {
