@@ -1,5 +1,5 @@
-name: "Schedule"
-description: "Execute a Schedule"
+name: "github-action-scheduler"
+description: "Execute a Schedule in Github Actions"
 inputs:
   config:
     description: "The Schedule Config (JSON). See config.ts for structure."
