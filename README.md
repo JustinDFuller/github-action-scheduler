@@ -43,6 +43,32 @@ if: ${{ steps.schedule.outputs.EXAMPLE == 'false' }}
 if: ${{ steps.schedule.outputs.EXAMPLE != 'false' }}
 ```
 
+### Day Schedules
+
+You can define a schedule based on the day(s) of the week. This is useful for recurring events that happen on a particular day of the week.
+
+```json
+{
+  "name": "weekdays",
+  "days": ["monday", "tuesday", "wednesday", "thursday", "friday"]
+},
+{
+  "name": "weekends",
+  "days": ["saturday", "sunday"]
+}
+```
+
+### Date Schedules
+
+You can define date schedules. This is useful for one-off events that happen on specific days, such as holidays.
+
+```json
+{
+  "name": "holidays",
+  "dates": ["2024-07-04", "2024-12-25"]
+}
+```
+
 ## Example
 
 ### Schedule JSON
