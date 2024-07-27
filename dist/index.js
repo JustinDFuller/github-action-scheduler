@@ -78,6 +78,20 @@ var dayjs = __nccwpck_require__(7401);
 var utc = __nccwpck_require__(4359);
 var timezone = __nccwpck_require__(4761);
 var config_1 = __nccwpck_require__(5532);
+var words = /\w/g;
+function formatOutput(input) {
+    var output = "";
+    for (var _i = 0, input_1 = input; _i < input_1.length; _i++) {
+        var s = input_1[_i];
+        if (!s.match(words)) {
+            output += "_";
+        }
+        else {
+            output += s;
+        }
+    }
+    return output.replace(/_+/g, "_");
+}
 function main() {
     return __awaiter(this, void 0, void 0, function () {
         var configString, config, _i, _a, s, schedule, now, start, end, _loop_1, _b, _c, d;
@@ -114,12 +128,12 @@ function main() {
                             .tz(config.timeZone)
                             .hour(schedule.endHour);
                         if (now.isAfter(start) && now.isBefore(end)) {
-                            core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" IS matched."));
-                            core.setOutput(schedule.name, true);
+                            core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                            core.setOutput(formatOutput(schedule.name), true);
                         }
                         else {
-                            core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" is NOT matched."));
-                            core.setOutput(schedule.name, false);
+                            core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                            core.setOutput(formatOutput(schedule.name), false);
                         }
                     }
                     if (schedule.days) {
@@ -142,12 +156,12 @@ function main() {
                             var start = dayjs().tz(config.timeZone).hour(schedule.startHour);
                             var end = dayjs().tz(config.timeZone).hour(schedule.endHour);
                             if (now.isAfter(start) && now.isBefore(end)) {
-                                core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" IS matched."));
-                                core.setOutput(schedule.name, true);
+                                core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                                core.setOutput(formatOutput(schedule.name), true);
                             }
                             else {
-                                core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" is NOT matched."));
-                                core.setOutput(schedule.name, false);
+                                core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                                core.setOutput(formatOutput(schedule.name), false);
                             }
                         };
                         for (_b = 0, _c = schedule.days; _b < _c.length; _b++) {

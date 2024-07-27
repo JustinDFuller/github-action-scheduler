@@ -4,6 +4,22 @@ import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
 import { Config, Schedule, Day, DAYS } from "./config";
 
+const words = /\w/g;
+
+function formatOutput(input: string): string {
+  let output: string = "";
+
+  for (const s of input) {
+    if (!s.match(words)) {
+      output += "_";
+    } else {
+      output += s;
+    }
+  }
+
+  return output.replace(/_+/g, "_");
+}
+
 async function main() {
   try {
     dayjs.extend(utc);
@@ -53,14 +69,14 @@ async function main() {
 
         if (now.isAfter(start) && now.isBefore(end)) {
           core.notice(
-            `The schedule "${schedule.name}" on date "${schedule.date}" IS matched.`,
+            `The schedule "${schedule.name}" on date "${schedule.date}" IS matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
           );
-          core.setOutput(schedule.name, true);
+          core.setOutput(formatOutput(schedule.name), true);
         } else {
           core.notice(
-            `The schedule "${schedule.name}" on date "${schedule.date}" is NOT matched.`,
+            `The schedule "${schedule.name}" on date "${schedule.date}" is NOT matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
           );
-          core.setOutput(schedule.name, false);
+          core.setOutput(formatOutput(schedule.name), false);
         }
       }
 
@@ -96,14 +112,14 @@ async function main() {
 
           if (now.isAfter(start) && now.isBefore(end)) {
             core.notice(
-              `The schedule "${schedule.name}" on day "${day}" IS matched.`,
+              `The schedule "${schedule.name}" on day "${day}" IS matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
             );
-            core.setOutput(schedule.name, true);
+            core.setOutput(formatOutput(schedule.name), true);
           } else {
             core.notice(
-              `The schedule "${schedule.name}" on day "${day}" is NOT matched.`,
+              `The schedule "${schedule.name}" on day "${day}" is NOT matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
             );
-            core.setOutput(schedule.name, false);
+            core.setOutput(formatOutput(schedule.name), false);
           }
         }
       }
