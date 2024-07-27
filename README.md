@@ -1,5 +1,7 @@
 # Github Action Scheduler
 
+[![GitHub Actions Demo](https://github.com/JustinDFuller/github-action-scheduler/actions/workflows/demo.yml/badge.svg)](https://github.com/JustinDFuller/github-action-scheduler/actions/workflows/demo.yml)
+
 Github Action to run a Schedule.
 
 ## Explanation
