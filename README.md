@@ -71,6 +71,22 @@ You can define date schedules. This is useful for one-off events that happen on 
 }
 ```
 
+Dates can use one of these formats. The date parser requires an exact match, so you cannot include any extra characters and you cannot use any delimiter except "-".
+
+| Format     | Example    | Description                                                 |
+|------------|------------|-------------------------------------------------------------|
+| YYYY-MM-DD | 2024-07-04 | Run this schedule on this year, month, and day. No repeats. |
+| MM-DD      | 07-04      | Run this schedule on this month and day. Repeat each year.  |
+| DD         | 04         | Run this schedule on this day. Repeat each month.           |
+
+Each field within the date uses the following formats.
+
+| Format | Allowed Values | Description                                                              |
+|--------|----------------|--------------------------------------------------------------------------|
+| YYYY   | 0001-9999      | The year. Must be 4 digits. Prefix with one or more 0s if less than 999. |
+| MM     | 01-12          | The month. Must be 2 digits. Prefix with 0 if less than 10.              |
+| DD     | 01-31          | The day. Must be 2 digits. Prefix with 0 if less than 10.                |
+
 ## Example
 
 ### Schedule JSON

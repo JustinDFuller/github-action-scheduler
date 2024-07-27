@@ -86,6 +86,9 @@ export type DateSchedule = ScheduleBase & {
 };
 
 // validDateFormats defines all the date formats supported by the Date schedule type.
+// Since strict parsing is enabled, the string must EXACTLY match one of these formats.
+// That include delimiters, so "-" is required and cannot be replaced with "/".
+// Also, there cannot be anything extra in the string.
 export const validDateFormats: string[] = [
   "YYYY-MM-DD", // 2024-01-31 (run on this exact day, month and year)
   "MM-DD", // 01-31 (repeat on this month and day each year)
