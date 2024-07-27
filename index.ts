@@ -37,6 +37,12 @@ async function main() {
 
       const now = dayjs().tz(config.timeZone);
 
+      if (!schedule.date && !schedule.days) {
+        throw new Error(
+          "A schedule must container either a date or days. Found neither.",
+        );
+      }
+
       if (schedule.date) {
         const start = dayjs(schedule.date, "YYYY-MM-DD")
           .tz(config.timeZone)
@@ -50,61 +56,55 @@ async function main() {
             `The schedule "${schedule.name}" on date "${schedule.date}" IS matched.`,
           );
           core.setOutput(schedule.name, true);
-
-          continue;
         } else {
           core.notice(
             `The schedule "${schedule.name}" on date "${schedule.date}" is NOT matched.`,
           );
           core.setOutput(schedule.name, false);
-
-          continue;
         }
       }
 
-      if (!schedule.days) {
-        throw new Error(`Missing Lock days: ${schedule.name}`);
-      }
+      if (schedule.days) {
+        for (const d of schedule.days) {
+          const day: Day = d;
 
-      for (const d of schedule.days) {
-        const day: Day = d;
+          if (!day) {
+            throw new Error(`Expected a day, got: "${day}`);
+          }
 
-        if (!day) {
-          throw new Error(`Expected a day, got: "${day}`);
-        }
+          core.debug(`Processing "${schedule.name}"."${day}"`);
 
-        core.debug(`Processing "${schedule.name}"."${day}"`);
+          if (!Day[day]) {
+            throw new Error(
+              `Unexpected day: "${day}". Acceptable options are: ${JSON.stringify(Day, null, 2)}. Days are case-sensitive.`,
+            );
+          }
 
-        if (!Day[day]) {
-          throw new Error(
-            `Unexpected day: "${day}". Acceptable options are: ${JSON.stringify(Day, null, 2)}. Days are case-sensitive.`,
-          );
-        }
+          const wantDay = DAYS.find((d) => d === day);
+          const gotDay = DAYS[now.day()];
 
-        const wantDay = DAYS.find((d) => d === day);
-        const gotDay = DAYS[now.day()];
+          if (wantDay !== gotDay) {
+            core.debug(`Day not matched: want=${wantDay} got=${gotDay}`);
 
-        if (wantDay !== gotDay) {
-          core.debug(`Day not matched: want=${wantDay} got=${gotDay}`);
+            continue;
+          }
 
-          continue;
-        }
+          core.debug(`Day matched: want=${wantDay} got=${gotDay}`);
 
-        core.debug(`Day matched: want=${wantDay} got=${gotDay}`);
+          const start = dayjs().tz(config.timeZone).hour(schedule.startHour);
+          const end = dayjs().tz(config.timeZone).hour(schedule.endHour);
 
-        const start = dayjs().tz(config.timeZone).hour(schedule.startHour);
-        const end = dayjs().tz(config.timeZone).hour(schedule.endHour);
-
-        if (now.isAfter(start) && now.isBefore(end)) {
-          core.notice(
-            `The schedule "${schedule.name}" on day "${day}" IS matched.`,
-          );
-          core.setOutput(schedule.name, true);
-        } else {
-          core.notice(
-            `The schedule "${schedule.name}" on day "${day}" is NOT matched.`,
-          );
-          core.setOutput(schedule.name, false);
+          if (now.isAfter(start) && now.isBefore(end)) {
+            core.notice(
+              `The schedule "${schedule.name}" on day "${day}" IS matched.`,
+            );
+            core.setOutput(schedule.name, true);
+          } else {
+            core.notice(
+              `The schedule "${schedule.name}" on day "${day}" is NOT matched.`,
+            );
+            core.setOutput(schedule.name, false);
+          }
         }
       }
     }

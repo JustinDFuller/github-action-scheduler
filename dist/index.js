@@ -103,6 +103,9 @@ function main() {
                     }
                     core.debug("Processing \"".concat(schedule.name, "\""));
                     now = dayjs().tz(config.timeZone);
+                    if (!schedule.date && !schedule.days) {
+                        throw new Error("A schedule must container either a date or days. Found neither.");
+                    }
                     if (schedule.date) {
                         start = dayjs(schedule.date, "YYYY-MM-DD")
                             .tz(config.timeZone)
@@ -113,47 +116,44 @@ function main() {
                         if (now.isAfter(start) && now.isBefore(end)) {
                             core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" IS matched."));
                             core.setOutput(schedule.name, true);
-                            continue;
                         }
                         else {
                             core.notice("The schedule \"".concat(schedule.name, "\" on date \"").concat(schedule.date, "\" is NOT matched."));
                             core.setOutput(schedule.name, false);
-                            continue;
                         }
                     }
-                    if (!schedule.days) {
-                        throw new Error("Missing Lock days: ".concat(schedule.name));
-                    }
-                    _loop_1 = function (d) {
-                        var day = d;
-                        if (!day) {
-                            throw new Error("Expected a day, got: \"".concat(day));
+                    if (schedule.days) {
+                        _loop_1 = function (d) {
+                            var day = d;
+                            if (!day) {
+                                throw new Error("Expected a day, got: \"".concat(day));
+                            }
+                            core.debug("Processing \"".concat(schedule.name, "\".\"").concat(day, "\""));
+                            if (!config_1.Day[day]) {
+                                throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(config_1.Day, null, 2), ". Days are case-sensitive."));
+                            }
+                            var wantDay = config_1.DAYS.find(function (d) { return d === day; });
+                            var gotDay = config_1.DAYS[now.day()];
+                            if (wantDay !== gotDay) {
+                                core.debug("Day not matched: want=".concat(wantDay, " got=").concat(gotDay));
+                                return "continue";
+                            }
+                            core.debug("Day matched: want=".concat(wantDay, " got=").concat(gotDay));
+                            var start = dayjs().tz(config.timeZone).hour(schedule.startHour);
+                            var end = dayjs().tz(config.timeZone).hour(schedule.endHour);
+                            if (now.isAfter(start) && now.isBefore(end)) {
+                                core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" IS matched."));
+                                core.setOutput(schedule.name, true);
+                            }
+                            else {
+                                core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" is NOT matched."));
+                                core.setOutput(schedule.name, false);
+                            }
+                        };
+                        for (_b = 0, _c = schedule.days; _b < _c.length; _b++) {
+                            d = _c[_b];
+                            _loop_1(d);
                         }
-                        core.debug("Processing \"".concat(schedule.name, "\".\"").concat(day, "\""));
-                        if (!config_1.Day[day]) {
-                            throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(config_1.Day, null, 2), ". Days are case-sensitive."));
-                        }
-                        var wantDay = config_1.DAYS.find(function (d) { return d === day; });
-                        var gotDay = config_1.DAYS[now.day()];
-                        if (wantDay !== gotDay) {
-                            core.debug("Day not matched: want=".concat(wantDay, " got=").concat(gotDay));
-                            return "continue";
-                        }
-                        core.debug("Day matched: want=".concat(wantDay, " got=").concat(gotDay));
-                        var start = dayjs().tz(config.timeZone).hour(schedule.startHour);
-                        var end = dayjs().tz(config.timeZone).hour(schedule.endHour);
-                        if (now.isAfter(start) && now.isBefore(end)) {
-                            core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" IS matched."));
-                            core.setOutput(schedule.name, true);
-                        }
-                        else {
-                            core.notice("The schedule \"".concat(schedule.name, "\" on day \"").concat(day, "\" is NOT matched."));
-                            core.setOutput(schedule.name, false);
-                        }
-                    };
-                    for (_b = 0, _c = schedule.days; _b < _c.length; _b++) {
-                        d = _c[_b];
-                        _loop_1(d);
                     }
                 }
             }
