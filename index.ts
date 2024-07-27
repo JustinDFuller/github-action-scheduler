@@ -2,7 +2,8 @@ import * as core from "@actions/core";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
-import { Config, Schedule, Day, DAYS } from "./config";
+import * as customParseFormat from "dayjs/plugin/customParseFormat";
+import { Config, Day, DAYS, validDateFormats } from "./config";
 
 const words = /\w/g;
 
@@ -34,6 +35,7 @@ async function main() {
   try {
     dayjs.extend(utc);
     dayjs.extend(timezone);
+    dayjs.extend(customParseFormat);
 
     const configString = core.getInput("config");
     if (!configString) {
@@ -81,16 +83,28 @@ async function main() {
         }
 
         for (const date of schedule.dates) {
-          const start = dayjs(date, "YYYY-MM-DD")
+          const start = dayjs(date, validDateFormats, true /* strict parsing */)
             .tz(config.timeZone)
             .hour(schedule.startHour)
             .minute(schedule.startMinute || 0)
             .second(schedule.startSecond || 0);
-          const end = dayjs(date, "YYYY-MM-DD")
+          const end = dayjs(date, validDateFormats, true /* strict parsing */)
             .tz(config.timeZone)
             .hour(schedule.endHour)
             .minute(schedule.endMinute || 0)
             .second(schedule.endSecond || 0);
+
+          if (!start.isValid()) {
+            throw new Error(
+              `Start date should follow one of the allowed date formats: ${JSON.stringify(validDateFormats, null, 2)}`,
+            );
+          }
+
+          if (!end.isValid()) {
+            throw new Error(
+              `End date should follow one of the allowed date formats: ${JSON.stringify(validDateFormats, null, 2)}`,
+            );
+          }
 
           if (now.isAfter(start) && now.isBefore(end)) {
             matched = true;

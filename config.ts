@@ -53,18 +53,6 @@ export type DaySchedule = ScheduleBase & {
   readonly days: Day[];
 };
 
-// A Date schedule matches one or more dates.
-// At least one date must be provided.
-// For other fields, see ScheduleBase above.
-export type DateSchedule = ScheduleBase & {
-  // dates defines the dates this schedule will match.
-  // valid entries adhere to the "YYYY-MM-DD" pattern such as "2024-01-31".
-  // YYYY = year expressed by four digits.
-  // MM = month expressed by two digits (using a leading 0 if required).
-  // DD = day expressed by two digits (using a leading 0 if required).
-  readonly dates: string[];
-};
-
 // Day defines valid Day inputs.
 export enum Day {
   sunday = "sunday",
@@ -86,4 +74,20 @@ export const DAYS: string[] = [
   "thursday",
   "friday",
   "saturday",
+];
+
+// A Date schedule matches one or more dates.
+// At least one date must be provided.
+// For other fields, see ScheduleBase above.
+export type DateSchedule = ScheduleBase & {
+  // dates defines the dates this schedule will match.
+  // See validDateFormats below for the allowed string formats.
+  readonly dates: string[];
+};
+
+// validDateFormats defines all the date formats supported by the Date schedule type.
+export const validDateFormats: string[] = [
+  "YYYY-MM-DD", // 2024-01-31 (run on this exact day, month and year)
+  "MM-DD", // 01-31 (repeat on this month and day each year)
+  "DD", // 31 (repeat on this day each month)
 ];
