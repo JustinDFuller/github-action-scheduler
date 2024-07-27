@@ -2,7 +2,7 @@ name: GitHub Actions Demo
 
 on:
   schedule:
-    - cron: "15 4,5 * * *"
+    - cron: "0 * * * *" # Every Hour
   push:
     branches:
       - main
@@ -11,11 +11,31 @@ on:
 jobs:
   Schedule:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
 
       - name: Schedule Branch Lock
+        id: schedule
         uses: ./
         with:
           config: ${{ vars.SCHEDULE }}
+
+      - name: Lock branch
+        uses: lyubick/action-branch-protection@v1
+        if: ${{ steps.schedule.outputs.lock == "true" }}
+        with:
+          access-token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
+          repository-name: JustinDFuller/schedule
+          branch-name: main
+          lock: true
+
+      - name: UnLock branch
+        uses: lyubick/action-branch-protection@v1
+        if: ${{ steps.schedule.outputs.lock == "false" && steps.schedule.outputs.unlock == "true" }}
+        with:
+          access-token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
+          repository-name: JustinDFuller/schedule
+          branch-name: main
+          lock: false
