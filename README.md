@@ -149,7 +149,7 @@ jobs:
 
       - name: Schedule Branch Lock
         id: schedule # Make sure to give it an ID
-        uses: JustinDFuller/schedule@v1
+        uses: JustinDFuller/schedule@v2
         with:
           config: ${{ vars.SCHEDULE }} # Pass in the Schedule Variable
     
