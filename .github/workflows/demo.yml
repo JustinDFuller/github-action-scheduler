@@ -27,19 +27,17 @@ jobs:
       - run: echo steps.schedule.outputs.LOCK_CUSTOM=${{ steps.schedule.outputs.LOCK_CUSTOM }}
 
       - name: Lock branch
-        uses: lyubick/action-branch-protection@v1
+        uses: JustinDFuller/github-action-lock-branch@v1
         if: ${{ steps.schedule.outputs.LOCK_WEEKENDS == 'true' || steps.schedule.outputs.LOCK_CUSTOM == 'true' }}
         with:
-          access-token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
-          repository-name: JustinDFuller/schedule
-          branch-name: main
+          token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
+          branch: main
           lock: true
 
       - name: UnLock branch
-        uses: lyubick/action-branch-protection@v1
+        uses: JustinDFuller/github-action-lock-branch@v1
         if: ${{ steps.schedule.outputs.UNLOCK == 'true' && steps.schedule.outputs.LOCK_WEEKENDS == 'false' && steps.schedule.outputs.LOCK_CUSTOM == 'false' }}
         with:
-          access-token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
-          repository-name: JustinDFuller/schedule
-          branch-name: main
+          token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
+          branch: main
           lock: false
