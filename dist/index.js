@@ -90,6 +90,8 @@ var dayjs = __nccwpck_require__(7401);
 var utc = __nccwpck_require__(4359);
 var timezone = __nccwpck_require__(4761);
 var customParseFormat = __nccwpck_require__(8225);
+var isSameOrBefore = __nccwpck_require__(9517);
+var isSameOrAfter = __nccwpck_require__(5290);
 var config_1 = __nccwpck_require__(5532);
 var words = /\w/g;
 function formatOutput(input) {
@@ -120,6 +122,8 @@ function main() {
                 dayjs.extend(utc);
                 dayjs.extend(timezone);
                 dayjs.extend(customParseFormat);
+                dayjs.extend(isSameOrBefore);
+                dayjs.extend(isSameOrAfter);
                 configString = core.getInput("config");
                 if (!configString) {
                     throw new Error("Expected a config string input. Got: \"".concat(configString));
@@ -167,12 +171,12 @@ function main() {
                             if (!end.isValid()) {
                                 throw new Error("End date should follow one of the allowed date formats: ".concat(JSON.stringify(config_1.validDateFormats, null, 2)));
                             }
-                            if (now.isAfter(start) && now.isBefore(end)) {
+                            if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
                                 matched = true;
                                 core.debug("Date matched: now=".concat(now, " start=").concat(start, " end=").concat(end));
                             }
                             else {
-                                core.debug("Date not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isAfter(start), " nowIsBeforeEnd=").concat(now.isBefore(end)));
+                                core.debug("Date not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isSameOrAfter(start), " nowIsBeforeEnd=").concat(now.isSameOrBefore(end)));
                             }
                         }
                     }
@@ -201,20 +205,20 @@ function main() {
                             core.debug("Day matched: want=".concat(wantDay, " got=").concat(gotDay));
                             var start = dayjs()
                                 .tz(config.timeZone)
-                                .add(schedule.startHour, "hour")
-                                .add(schedule.startMinute || 0, "minute")
-                                .add(schedule.startSecond || 0, "second");
+                                .hour(schedule.startHour)
+                                .minute(schedule.startMinute || 0)
+                                .second(schedule.startSecond || 0);
                             var end = dayjs()
                                 .tz(config.timeZone)
-                                .add(schedule.endHour, "hour")
-                                .add(schedule.endMinute || 0, "minute")
-                                .add(schedule.endSecond || 0, "second");
-                            if (now.isAfter(start) && now.isBefore(end)) {
+                                .hour(schedule.endHour)
+                                .minute(schedule.endMinute || 0)
+                                .second(schedule.endSecond || 0);
+                            if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
                                 matched = true;
                                 core.debug("Day matched: now=".concat(now, " start=").concat(start, " end=").concat(end));
                             }
                             else {
-                                core.debug("Day not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isAfter(start), " nowIsBeforeEnd=").concat(now.isBefore(end)));
+                                core.debug("Day not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isSameOrAfter(start), " nowIsBeforeEnd=").concat(now.isSameOrBefore(end)));
                             }
                         };
                         for (_d = 0, _e = schedule.days; _d < _e.length; _d++) {
@@ -2084,6 +2088,20 @@ function isLoopbackAddress(host) {
 /***/ (function(module) {
 
 !function(e,t){ true?module.exports=t():0}(this,(function(){"use strict";var e={LTS:"h:mm:ss A",LT:"h:mm A",L:"MM/DD/YYYY",LL:"MMMM D, YYYY",LLL:"MMMM D, YYYY h:mm A",LLLL:"dddd, MMMM D, YYYY h:mm A"},t=/(\[[^[]*\])|([-_:/.,()\s]+)|(A|a|YYYY|YY?|MM?M?M?|Do|DD?|hh?|HH?|mm?|ss?|S{1,3}|z|ZZ?)/g,n=/\d\d/,r=/\d\d?/,i=/\d*[^-_:/,()\s\d]+/,o={},s=function(e){return(e=+e)+(e>68?1900:2e3)};var a=function(e){return function(t){this[e]=+t}},f=[/[+-]\d\d:?(\d\d)?|Z/,function(e){(this.zone||(this.zone={})).offset=function(e){if(!e)return 0;if("Z"===e)return 0;var t=e.match(/([+-]|\d\d)/g),n=60*t[1]+(+t[2]||0);return 0===n?0:"+"===t[0]?-n:n}(e)}],h=function(e){var t=o[e];return t&&(t.indexOf?t:t.s.concat(t.f))},u=function(e,t){var n,r=o.meridiem;if(r){for(var i=1;i<=24;i+=1)if(e.indexOf(r(i,0,t))>-1){n=i>12;break}}else n=e===(t?"pm":"PM");return n},d={A:[i,function(e){this.afternoon=u(e,!1)}],a:[i,function(e){this.afternoon=u(e,!0)}],S:[/\d/,function(e){this.milliseconds=100*+e}],SS:[n,function(e){this.milliseconds=10*+e}],SSS:[/\d{3}/,function(e){this.milliseconds=+e}],s:[r,a("seconds")],ss:[r,a("seconds")],m:[r,a("minutes")],mm:[r,a("minutes")],H:[r,a("hours")],h:[r,a("hours")],HH:[r,a("hours")],hh:[r,a("hours")],D:[r,a("day")],DD:[n,a("day")],Do:[i,function(e){var t=o.ordinal,n=e.match(/\d+/);if(this.day=n[0],t)for(var r=1;r<=31;r+=1)t(r).replace(/\[|\]/g,"")===e&&(this.day=r)}],M:[r,a("month")],MM:[n,a("month")],MMM:[i,function(e){var t=h("months"),n=(h("monthsShort")||t.map((function(e){return e.slice(0,3)}))).indexOf(e)+1;if(n<1)throw new Error;this.month=n%12||n}],MMMM:[i,function(e){var t=h("months").indexOf(e)+1;if(t<1)throw new Error;this.month=t%12||t}],Y:[/[+-]?\d+/,a("year")],YY:[n,function(e){this.year=s(e)}],YYYY:[/\d{4}/,a("year")],Z:f,ZZ:f};function c(n){var r,i;r=n,i=o&&o.formats;for(var s=(n=r.replace(/(\[[^\]]+])|(LTS?|l{1,4}|L{1,4})/g,(function(t,n,r){var o=r&&r.toUpperCase();return n||i[r]||e[r]||i[o].replace(/(\[[^\]]+])|(MMMM|MM|DD|dddd)/g,(function(e,t,n){return t||n.slice(1)}))}))).match(t),a=s.length,f=0;f<a;f+=1){var h=s[f],u=d[h],c=u&&u[0],l=u&&u[1];s[f]=l?{regex:c,parser:l}:h.replace(/^\[|\]$/g,"")}return function(e){for(var t={},n=0,r=0;n<a;n+=1){var i=s[n];if("string"==typeof i)r+=i.length;else{var o=i.regex,f=i.parser,h=e.slice(r),u=o.exec(h)[0];f.call(t,u),e=e.replace(u,"")}}return function(e){var t=e.afternoon;if(void 0!==t){var n=e.hours;t?n<12&&(e.hours+=12):12===n&&(e.hours=0),delete e.afternoon}}(t),t}}return function(e,t,n){n.p.customParseFormat=!0,e&&e.parseTwoDigitYear&&(s=e.parseTwoDigitYear);var r=t.prototype,i=r.parse;r.parse=function(e){var t=e.date,r=e.utc,s=e.args;this.$u=r;var a=s[1];if("string"==typeof a){var f=!0===s[2],h=!0===s[3],u=f||h,d=s[2];h&&(d=s[2]),o=this.$locale(),!f&&d&&(o=n.Ls[d]),this.$d=function(e,t,n){try{if(["x","X"].indexOf(t)>-1)return new Date(("X"===t?1e3:1)*e);var r=c(t)(e),i=r.year,o=r.month,s=r.day,a=r.hours,f=r.minutes,h=r.seconds,u=r.milliseconds,d=r.zone,l=new Date,m=s||(i||o?1:l.getDate()),M=i||l.getFullYear(),Y=0;i&&!o||(Y=o>0?o-1:l.getMonth());var p=a||0,v=f||0,D=h||0,g=u||0;return d?new Date(Date.UTC(M,Y,m,p,v,D,g+60*d.offset*1e3)):n?new Date(Date.UTC(M,Y,m,p,v,D,g)):new Date(M,Y,m,p,v,D,g)}catch(e){return new Date("")}}(t,a,r),this.init(),d&&!0!==d&&(this.$L=this.locale(d).$L),u&&t!=this.format(a)&&(this.$d=new Date("")),o={}}else if(a instanceof Array)for(var l=a.length,m=1;m<=l;m+=1){s[1]=a[m-1];var M=n.apply(this,s);if(M.isValid()){this.$d=M.$d,this.$L=M.$L,this.init();break}m===l&&(this.$d=new Date(""))}else i.call(this,e)}}}));
+
+/***/ }),
+
+/***/ 5290:
+/***/ (function(module) {
+
+!function(e,t){ true?module.exports=t():0}(this,(function(){"use strict";return function(e,t){t.prototype.isSameOrAfter=function(e,t){return this.isSame(e,t)||this.isAfter(e,t)}}}));
+
+/***/ }),
+
+/***/ 9517:
+/***/ (function(module) {
+
+!function(e,i){ true?module.exports=i():0}(this,(function(){"use strict";return function(e,i){i.prototype.isSameOrBefore=function(e,i){return this.isSame(e,i)||this.isBefore(e,i)}}}));
 
 /***/ }),
 
