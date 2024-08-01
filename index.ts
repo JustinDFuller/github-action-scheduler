@@ -3,6 +3,8 @@ import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
 import * as customParseFormat from "dayjs/plugin/customParseFormat";
+import * as isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import * as isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { Config, Day, DAYS, validDateFormats } from "./config";
 
 const words = /\w/g;
@@ -36,6 +38,8 @@ async function main() {
     dayjs.extend(utc);
     dayjs.extend(timezone);
     dayjs.extend(customParseFormat);
+    dayjs.extend(isSameOrBefore);
+    dayjs.extend(isSameOrAfter);
 
     const configString = core.getInput("config");
     if (!configString) {
@@ -111,12 +115,12 @@ async function main() {
             );
           }
 
-          if (now.isAfter(start) && now.isBefore(end)) {
+          if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
             matched = true;
             core.debug(`Date matched: now=${now} start=${start} end=${end}`);
           } else {
             core.debug(
-              `Date not matched: now=${now} start=${start} end=${end} nowIsAfterStart=${now.isAfter(start)} nowIsBeforeEnd=${now.isBefore(end)}`,
+              `Date not matched: now=${now} start=${start} end=${end} nowIsAfterStart=${now.isSameOrAfter(start)} nowIsBeforeEnd=${now.isSameOrBefore(end)}`,
             );
           }
         }
@@ -161,22 +165,22 @@ async function main() {
 
           const start = dayjs()
             .tz(config.timeZone)
-            .add(schedule.startHour, "hour")
-            .add(schedule.startMinute || 0, "minute")
-            .add(schedule.startSecond || 0, "second");
+            .hour(schedule.startHour)
+            .minute(schedule.startMinute || 0)
+            .second(schedule.startSecond || 0);
 
           const end = dayjs()
             .tz(config.timeZone)
-            .add(schedule.endHour, "hour")
-            .add(schedule.endMinute || 0, "minute")
-            .add(schedule.endSecond || 0, "second");
+            .hour(schedule.endHour)
+            .minute(schedule.endMinute || 0)
+            .second(schedule.endSecond || 0);
 
-          if (now.isAfter(start) && now.isBefore(end)) {
+          if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
             matched = true;
             core.debug(`Day matched: now=${now} start=${start} end=${end}`);
           } else {
             core.debug(
-              `Day not matched: now=${now} start=${start} end=${end} nowIsAfterStart=${now.isAfter(start)} nowIsBeforeEnd=${now.isBefore(end)}`,
+              `Day not matched: now=${now} start=${start} end=${end} nowIsAfterStart=${now.isSameOrAfter(start)} nowIsBeforeEnd=${now.isSameOrBefore(end)}`,
             );
           }
         }
