@@ -152,14 +152,14 @@ function main() {
                             date = _c[_b];
                             start = dayjs(date, config_1.validDateFormats, true /* strict parsing */)
                                 .tz(config.timeZone)
-                                .hour(schedule.startHour)
-                                .minute(schedule.startMinute || 0)
-                                .second(schedule.startSecond || 0);
+                                .add(schedule.startHour, "hour")
+                                .add(schedule.startMinute || 0, "minute")
+                                .add(schedule.startSecond || 0, "second");
                             end = dayjs(date, config_1.validDateFormats, true /* strict parsing */)
                                 .tz(config.timeZone)
-                                .hour(schedule.endHour)
-                                .minute(schedule.endMinute || 0)
-                                .second(schedule.endSecond || 0);
+                                .add(schedule.endHour, "hour")
+                                .add(schedule.endMinute || 0, "minute")
+                                .add(schedule.endSecond || 0, "second");
                             core.debug("Processing \"".concat(schedule.name, "\".\"").concat(date, "\" start=").concat(start, " end=").concat(end));
                             if (!start.isValid()) {
                                 throw new Error("Start date should follow one of the allowed date formats: ".concat(JSON.stringify(config_1.validDateFormats, null, 2)));
@@ -169,6 +169,7 @@ function main() {
                             }
                             if (now.isAfter(start) && now.isBefore(end)) {
                                 matched = true;
+                                core.debug("Date matched: now=".concat(now, " start=").concat(start, " end=").concat(end));
                             }
                             else {
                                 core.debug("Date not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isAfter(start), " nowIsBeforeEnd=").concat(now.isBefore(end)));
@@ -200,30 +201,34 @@ function main() {
                             core.debug("Day matched: want=".concat(wantDay, " got=").concat(gotDay));
                             var start = dayjs()
                                 .tz(config.timeZone)
-                                .hour(schedule.startHour)
-                                .minute(schedule.startMinute || 0)
-                                .second(schedule.startSecond || 0);
+                                .add(schedule.startHour, "hour")
+                                .add(schedule.startMinute || 0, "minute")
+                                .add(schedule.startSecond || 0, "second");
                             var end = dayjs()
                                 .tz(config.timeZone)
-                                .hour(schedule.endHour)
-                                .minute(schedule.endMinute || 0)
-                                .second(schedule.endSecond || 0);
+                                .add(schedule.endHour, "hour")
+                                .add(schedule.endMinute || 0, "minute")
+                                .add(schedule.endSecond || 0, "second");
                             if (now.isAfter(start) && now.isBefore(end)) {
                                 matched = true;
+                                core.debug("Day matched: now=".concat(now, " start=").concat(start, " end=").concat(end));
+                            }
+                            else {
+                                core.debug("Day not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isAfter(start), " nowIsBeforeEnd=").concat(now.isBefore(end)));
                             }
                         };
                         for (_d = 0, _e = schedule.days; _d < _e.length; _d++) {
                             d = _e[_d];
                             _loop_1(d);
                         }
-                    }
-                    if (matched) {
-                        core.notice("The schedule \"".concat(schedule.name, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                        core.setOutput(formatOutput(schedule.name), true);
-                    }
-                    else {
-                        core.notice("The schedule \"".concat(schedule.name, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                        core.setOutput(formatOutput(schedule.name), false);
+                        if (matched) {
+                            core.notice("The schedule \"".concat(schedule.name, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                            core.setOutput(formatOutput(schedule.name), true);
+                        }
+                        else {
+                            core.notice("The schedule \"".concat(schedule.name, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                            core.setOutput(formatOutput(schedule.name), false);
+                        }
                     }
                 }
             }
