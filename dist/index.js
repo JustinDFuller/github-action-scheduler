@@ -225,14 +225,14 @@ function main() {
                             d = _e[_d];
                             _loop_1(d);
                         }
-                        if (matched) {
-                            core.notice("The schedule \"".concat(schedule.name, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                            core.setOutput(formatOutput(schedule.name), true);
-                        }
-                        else {
-                            core.notice("The schedule \"".concat(schedule.name, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                            core.setOutput(formatOutput(schedule.name), false);
-                        }
+                    }
+                    if (matched) {
+                        core.notice("The schedule \"".concat(schedule.name, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                        core.setOutput(formatOutput(schedule.name), true);
+                    }
+                    else {
+                        core.notice("The schedule \"".concat(schedule.name, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+                        core.setOutput(formatOutput(schedule.name), false);
                     }
                 }
             }
