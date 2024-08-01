@@ -94,6 +94,10 @@ async function main() {
             .minute(schedule.endMinute || 0)
             .second(schedule.endSecond || 0);
 
+          core.debug(
+            `Processing "${schedule.name}"."${date}" start=${start} end=${end}`,
+          );
+
           if (!start.isValid()) {
             throw new Error(
               `Start date should follow one of the allowed date formats: ${JSON.stringify(validDateFormats, null, 2)}`,
@@ -108,6 +112,10 @@ async function main() {
 
           if (now.isAfter(start) && now.isBefore(end)) {
             matched = true;
+          } else {
+            core.debug(
+              `Date not matched: now=${now} start=${start} end=${end} nowIsAfterStart=${now.isAfter(start)} nowIsBeforeEnd=${now.isBefore(end)}`,
+            );
           }
         }
       }

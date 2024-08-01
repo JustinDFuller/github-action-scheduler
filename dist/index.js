@@ -160,6 +160,7 @@ function main() {
                                 .hour(schedule.endHour)
                                 .minute(schedule.endMinute || 0)
                                 .second(schedule.endSecond || 0);
+                            core.debug("Processing \"".concat(schedule.name, "\".\"").concat(date, "\" start=").concat(start, " end=").concat(end));
                             if (!start.isValid()) {
                                 throw new Error("Start date should follow one of the allowed date formats: ".concat(JSON.stringify(config_1.validDateFormats, null, 2)));
                             }
@@ -168,6 +169,9 @@ function main() {
                             }
                             if (now.isAfter(start) && now.isBefore(end)) {
                                 matched = true;
+                            }
+                            else {
+                                core.debug("Date not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isAfter(start), " nowIsBeforeEnd=").concat(now.isBefore(end)));
                             }
                         }
                     }
