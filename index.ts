@@ -184,18 +184,18 @@ async function main() {
             );
           }
         }
+      }
 
-        if (matched) {
-          core.notice(
-            `The schedule "${schedule.name}" IS matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
-          );
-          core.setOutput(formatOutput(schedule.name), true);
-        } else {
-          core.notice(
-            `The schedule "${schedule.name}" is NOT matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
-          );
-          core.setOutput(formatOutput(schedule.name), false);
-        }
+      if (matched) {
+        core.notice(
+          `The schedule "${schedule.name}" IS matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
+        );
+        core.setOutput(formatOutput(schedule.name), true);
+      } else {
+        core.notice(
+          `The schedule "${schedule.name}" is NOT matched. You can access it as "steps.{ STEP_ID }.outputs.${formatOutput(schedule.name)}".`,
+        );
+        core.setOutput(formatOutput(schedule.name), false);
       }
     }
   } catch (error) {
