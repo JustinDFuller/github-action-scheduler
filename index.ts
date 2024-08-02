@@ -47,7 +47,7 @@ async function main() {
 
     core.debug(`Parsed Config: ${JSON.stringify(config, null, 2)}`);
 
-    process(dayjs().tz(config.timeZone), config, logger);
+    process(dayjs(), config, logger);
   } catch (error) {
     core.setFailed(error.message);
   }

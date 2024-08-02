@@ -127,7 +127,7 @@ function main() {
                     throw new Error("No Schedule Found.");
                 }
                 core.debug("Parsed Config: ".concat(JSON.stringify(config, null, 2)));
-                (0, process_1.process)(dayjs().tz(config.timeZone), config, logger);
+                (0, process_1.process)(dayjs(), config, logger);
             }
             catch (error) {
                 core.setFailed(error.message);
