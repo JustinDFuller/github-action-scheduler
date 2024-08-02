@@ -1,9 +1,9 @@
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import * as dayjs from "dayjs";
+import * as utc from "dayjs/plugin/utc";
+import * as timezone from "dayjs/plugin/timezone";
+import * as customParseFormat from "dayjs/plugin/customParseFormat";
+import * as isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import * as isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { Config, Day, DAYS, validDateFormats } from "./config";
 import { process as processor } from "./process";
 import type { Logger } from "./logger";
