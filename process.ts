@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-import dayjs from "dayjs";
+import * as dayjs from "dayjs";
 import { Config, Day, DAYS, validDateFormats } from "./config";
 import type { Logger } from "./logger";
 

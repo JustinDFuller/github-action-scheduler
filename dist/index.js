@@ -92,32 +92,25 @@ var timezone = __nccwpck_require__(4761);
 var customParseFormat = __nccwpck_require__(8225);
 var isSameOrBefore = __nccwpck_require__(9517);
 var isSameOrAfter = __nccwpck_require__(5290);
-var config_1 = __nccwpck_require__(5532);
-var words = /\w/g;
-function formatOutput(input) {
-    var output = "";
-    for (var _i = 0, input_1 = input; _i < input_1.length; _i++) {
-        var s = input_1[_i];
-        if (!s.match(words)) {
-            output += "_";
-        }
-        else {
-            output += s;
-        }
-    }
-    output = output.replace(/_+/g, "_");
-    if (output.endsWith("_")) {
-        output = output.slice(0, output.length - 1);
-    }
-    if (output.startsWith("_")) {
-        output = output.slice(1);
-    }
-    return output.toUpperCase();
-}
+var process_1 = __nccwpck_require__(1670);
+var logger = {
+    debug: function (message) {
+        core.debug(message);
+    },
+    notice: function (message) {
+        core.notice(message);
+    },
+    fail: function (message) {
+        core.setFailed(message);
+    },
+    setOutput: function (name, value) {
+        core.setOutput(name, value);
+    },
+};
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var configString, config, _i, _a, schedule, now, matched, _b, _c, date, start, end, _loop_1, _d, _e, d;
-        return __generator(this, function (_f) {
+        var configString, config;
+        return __generator(this, function (_a) {
             try {
                 dayjs.extend(utc);
                 dayjs.extend(timezone);
@@ -134,107 +127,7 @@ function main() {
                     throw new Error("No Schedule Found.");
                 }
                 core.debug("Parsed Config: ".concat(JSON.stringify(config, null, 2)));
-                for (_i = 0, _a = config.schedules; _i < _a.length; _i++) {
-                    schedule = _a[_i];
-                    if (!schedule.name) {
-                        throw new Error("Missing Schedule Name: ".concat(JSON.stringify(schedule, null, 2)));
-                    }
-                    core.debug("Processing \"".concat(schedule.name, "\""));
-                    now = dayjs().tz(config.timeZone);
-                    if (!("dates" in schedule) && !("days" in schedule)) {
-                        throw new Error("A schedule must container either a date or days. Found neither.");
-                    }
-                    matched = false;
-                    if ("dates" in schedule) {
-                        if (!Array.isArray(schedule.dates)) {
-                            throw new Error("The dates field must be an array.");
-                        }
-                        if (schedule.dates.length === 0) {
-                            throw new Error("At least one date must be provided in the dates field.");
-                        }
-                        for (_b = 0, _c = schedule.dates; _b < _c.length; _b++) {
-                            date = _c[_b];
-                            start = dayjs(date, config_1.validDateFormats, true /* strict parsing */)
-                                .tz(config.timeZone)
-                                .add(schedule.startHour, "hour")
-                                .add(schedule.startMinute || 0, "minute")
-                                .add(schedule.startSecond || 0, "second");
-                            end = dayjs(date, config_1.validDateFormats, true /* strict parsing */)
-                                .tz(config.timeZone)
-                                .add(schedule.endHour, "hour")
-                                .add(schedule.endMinute || 0, "minute")
-                                .add(schedule.endSecond || 0, "second");
-                            core.debug("Processing \"".concat(schedule.name, "\".\"").concat(date, "\" start=").concat(start, " end=").concat(end));
-                            if (!start.isValid()) {
-                                throw new Error("Start date should follow one of the allowed date formats: ".concat(JSON.stringify(config_1.validDateFormats, null, 2)));
-                            }
-                            if (!end.isValid()) {
-                                throw new Error("End date should follow one of the allowed date formats: ".concat(JSON.stringify(config_1.validDateFormats, null, 2)));
-                            }
-                            if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
-                                matched = true;
-                                core.debug("Date matched: now=".concat(now, " start=").concat(start, " end=").concat(end));
-                            }
-                            else {
-                                core.debug("Date not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isSameOrAfter(start), " nowIsBeforeEnd=").concat(now.isSameOrBefore(end)));
-                            }
-                        }
-                    }
-                    if ("days" in schedule) {
-                        if (!Array.isArray(schedule.days)) {
-                            throw new Error("The days field must be an array.");
-                        }
-                        if (schedule.days.length === 0) {
-                            throw new Error("At least one day must be provided in the days field");
-                        }
-                        _loop_1 = function (d) {
-                            var day = d;
-                            if (!day) {
-                                throw new Error("Expected a day, got: \"".concat(day));
-                            }
-                            core.debug("Processing \"".concat(schedule.name, "\".\"").concat(day, "\""));
-                            if (!config_1.Day[day]) {
-                                throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(config_1.Day, null, 2), ". Days are case-sensitive."));
-                            }
-                            var wantDay = config_1.DAYS.find(function (d) { return d === day; });
-                            var gotDay = config_1.DAYS[now.day()];
-                            if (wantDay !== gotDay) {
-                                core.debug("Day not matched: want=".concat(wantDay, " got=").concat(gotDay));
-                                return "continue";
-                            }
-                            core.debug("Day matched: want=".concat(wantDay, " got=").concat(gotDay));
-                            var start = dayjs()
-                                .tz(config.timeZone)
-                                .hour(schedule.startHour)
-                                .minute(schedule.startMinute || 0)
-                                .second(schedule.startSecond || 0);
-                            var end = dayjs()
-                                .tz(config.timeZone)
-                                .hour(schedule.endHour)
-                                .minute(schedule.endMinute || 0)
-                                .second(schedule.endSecond || 0);
-                            if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
-                                matched = true;
-                                core.debug("Day matched: now=".concat(now, " start=").concat(start, " end=").concat(end));
-                            }
-                            else {
-                                core.debug("Day not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isSameOrAfter(start), " nowIsBeforeEnd=").concat(now.isSameOrBefore(end)));
-                            }
-                        };
-                        for (_d = 0, _e = schedule.days; _d < _e.length; _d++) {
-                            d = _e[_d];
-                            _loop_1(d);
-                        }
-                    }
-                    if (matched) {
-                        core.notice("The schedule \"".concat(schedule.name, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                        core.setOutput(formatOutput(schedule.name), true);
-                    }
-                    else {
-                        core.notice("The schedule \"".concat(schedule.name, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
-                        core.setOutput(formatOutput(schedule.name), false);
-                    }
-                }
+                (0, process_1.process)(dayjs().tz(config.timeZone), config, logger);
             }
             catch (error) {
                 core.setFailed(error.message);
@@ -25202,6 +25095,145 @@ function version(uuid) {
 
 var _default = version;
 exports["default"] = _default;
+
+/***/ }),
+
+/***/ 1670:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.process = process;
+var dayjs = __nccwpck_require__(7401);
+var config_1 = __nccwpck_require__(5532);
+var words = /\w/g;
+function formatOutput(input) {
+    var output = "";
+    for (var _i = 0, input_1 = input; _i < input_1.length; _i++) {
+        var s = input_1[_i];
+        if (!s.match(words)) {
+            output += "_";
+        }
+        else {
+            output += s;
+        }
+    }
+    output = output.replace(/_+/g, "_");
+    if (output.endsWith("_")) {
+        output = output.slice(0, output.length - 1);
+    }
+    if (output.startsWith("_")) {
+        output = output.slice(1);
+    }
+    return output.toUpperCase();
+}
+function process(now, config, logger) {
+    var anyMatched = false;
+    for (var _i = 0, _a = config.schedules; _i < _a.length; _i++) {
+        var schedule = _a[_i];
+        if (!schedule.name) {
+            throw new Error("Missing Schedule Name: ".concat(JSON.stringify(schedule, null, 2)));
+        }
+        logger.debug("Processing \"".concat(schedule.name, "\""));
+        if (!("dates" in schedule) && !("days" in schedule)) {
+            throw new Error("A schedule must container either a date or days. Found neither.");
+        }
+        var matched = false;
+        if ("dates" in schedule) {
+            if (!Array.isArray(schedule.dates)) {
+                throw new Error("The dates field must be an array.");
+            }
+            if (schedule.dates.length === 0) {
+                throw new Error("At least one date must be provided in the dates field.");
+            }
+            for (var _b = 0, _c = schedule.dates; _b < _c.length; _b++) {
+                var date = _c[_b];
+                var start = dayjs(date, config_1.validDateFormats, true /* strict parsing */)
+                    .tz(config.timeZone)
+                    .add(schedule.startHour, "hour")
+                    .add(schedule.startMinute || 0, "minute")
+                    .add(schedule.startSecond || 0, "second");
+                var end = dayjs(date, config_1.validDateFormats, true /* strict parsing */)
+                    .tz(config.timeZone)
+                    .add(schedule.endHour, "hour")
+                    .add(schedule.endMinute || 0, "minute")
+                    .add(schedule.endSecond || 0, "second");
+                logger.debug("Processing \"".concat(schedule.name, "\".\"").concat(date, "\" start=").concat(start, " end=").concat(end));
+                if (!start.isValid()) {
+                    throw new Error("Start date should follow one of the allowed date formats: ".concat(JSON.stringify(config_1.validDateFormats, null, 2)));
+                }
+                if (!end.isValid()) {
+                    throw new Error("End date should follow one of the allowed date formats: ".concat(JSON.stringify(config_1.validDateFormats, null, 2)));
+                }
+                if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
+                    matched = true;
+                    logger.debug("Date matched: now=".concat(now, " start=").concat(start, " end=").concat(end));
+                }
+                else {
+                    logger.debug("Date not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isSameOrAfter(start), " nowIsBeforeEnd=").concat(now.isSameOrBefore(end)));
+                }
+            }
+        }
+        if ("days" in schedule) {
+            if (!Array.isArray(schedule.days)) {
+                throw new Error("The days field must be an array.");
+            }
+            if (schedule.days.length === 0) {
+                throw new Error("At least one day must be provided in the days field");
+            }
+            var _loop_1 = function (d) {
+                var day = d;
+                if (!day) {
+                    throw new Error("Expected a day, got: \"".concat(day));
+                }
+                logger.debug("Processing \"".concat(schedule.name, "\".\"").concat(day, "\""));
+                if (!config_1.Day[day]) {
+                    throw new Error("Unexpected day: \"".concat(day, "\". Acceptable options are: ").concat(JSON.stringify(config_1.Day, null, 2), ". Days are case-sensitive."));
+                }
+                var wantDay = config_1.DAYS.find(function (d) { return d === day; });
+                var gotDay = config_1.DAYS[now.day()];
+                if (wantDay !== gotDay) {
+                    logger.debug("Day not matched: want=".concat(wantDay, " got=").concat(gotDay));
+                    return "continue";
+                }
+                logger.debug("Day matched: want=".concat(wantDay, " got=").concat(gotDay));
+                var start = now
+                    .tz(config.timeZone)
+                    .hour(schedule.startHour)
+                    .minute(schedule.startMinute || 0)
+                    .second(schedule.startSecond || 0);
+                var end = now
+                    .tz(config.timeZone)
+                    .hour(schedule.endHour)
+                    .minute(schedule.endMinute || 0)
+                    .second(schedule.endSecond || 0);
+                if (now.isSameOrAfter(start) && now.isSameOrBefore(end)) {
+                    matched = true;
+                    logger.debug("Day matched: now=".concat(now, " start=").concat(start, " end=").concat(end));
+                }
+                else {
+                    logger.debug("Day not matched: now=".concat(now, " start=").concat(start, " end=").concat(end, " nowIsAfterStart=").concat(now.isSameOrAfter(start), " nowIsBeforeEnd=").concat(now.isSameOrBefore(end)));
+                }
+            };
+            for (var _d = 0, _e = schedule.days; _d < _e.length; _d++) {
+                var d = _e[_d];
+                _loop_1(d);
+            }
+        }
+        if (matched) {
+            anyMatched = true;
+            logger.notice("The schedule \"".concat(schedule.name, "\" IS matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+            logger.setOutput(formatOutput(schedule.name), true);
+        }
+        else {
+            logger.notice("The schedule \"".concat(schedule.name, "\" is NOT matched. You can access it as \"steps.{ STEP_ID }.outputs.").concat(formatOutput(schedule.name), "\"."));
+            logger.setOutput(formatOutput(schedule.name), false);
+        }
+    }
+    return anyMatched;
+}
+
 
 /***/ }),
 

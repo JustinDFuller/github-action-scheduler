@@ -7,6 +7,7 @@ import * as isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import * as isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { Config, Day, DAYS, validDateFormats } from "./config";
 import type { Logger } from "./logger";
+import { process } from "./process";
 
 const logger: Logger = {
   debug: (message: string) => {
