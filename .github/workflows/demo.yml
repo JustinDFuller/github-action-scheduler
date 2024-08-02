@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Schedule Branch Lock
         id: schedule
-        uses: JustinDFuller/github-action-scheduler@latest
+        uses: ./
         with:
           config: ${{ vars.SCHEDULE }}
 
