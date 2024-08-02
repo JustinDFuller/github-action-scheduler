@@ -4,7 +4,8 @@
   "description": "Github Action to Lock a Branch on a Schedule",
   "main": "index.js",
   "scripts": {
-    "build": "prettier -w *.ts **/*.yml && tsc index.ts && ncc build index.js --license licenses.txt"
+    "build": "prettier -w *.ts **/*.yml && tsc index.ts && ncc build index.js --license licenses.txt",
+    "test": "ts-node test.ts"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,9 @@
   "devDependencies": {
     "@types/node": "^20.14.12",
     "@vercel/ncc": "^0.38.1",
+    "chalk": "^5.3.0",
     "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
 }
