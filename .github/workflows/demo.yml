@@ -18,7 +18,7 @@ jobs:
 
       - name: Schedule Branch Lock
         id: schedule
-        uses: JustinDFuller/github-action-scheduler@v2
+        uses: JustinDFuller/github-action-scheduler@v7
         with:
           config: ${{ vars.SCHEDULE }}
 
@@ -27,7 +27,7 @@ jobs:
       - run: echo steps.schedule.outputs.LOCK_CUSTOM=${{ steps.schedule.outputs.LOCK_CUSTOM }}
 
       - name: Lock branch
-        uses: JustinDFuller/github-action-lock-branch@v1
+        uses: JustinDFuller/github-action-lock-branch@v0.1
         if: ${{ steps.schedule.outputs.LOCK_WEEKENDS == 'true' || steps.schedule.outputs.LOCK_CUSTOM == 'true' }}
         with:
           token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
@@ -35,7 +35,7 @@ jobs:
           lock: true
 
       - name: UnLock branch
-        uses: JustinDFuller/github-action-lock-branch@v1
+        uses: JustinDFuller/github-action-lock-branch@v0.1
         if: ${{ steps.schedule.outputs.UNLOCK == 'true' && steps.schedule.outputs.LOCK_WEEKENDS == 'false' && steps.schedule.outputs.LOCK_CUSTOM == 'false' }}
         with:
           token: ${{ secrets.EXAMPLE_TOKEN_FOR_GITHUB_ACTION }}
