@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "prettier -w *.ts **/*.yml && tsc index.ts && ncc build index.js --license licenses.txt",
-    "test": "ts-node test.ts"
+    "test": "ts-node test.ts",
+    "test-ci": "tsc test.ts && node test.js"
   },
   "repository": {
     "type": "git",
