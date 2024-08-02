@@ -1,6 +1,7 @@
 # Github Action Scheduler
 
 [![GitHub Actions Demo](https://github.com/JustinDFuller/github-action-scheduler/actions/workflows/demo.yml/badge.svg)](https://github.com/JustinDFuller/github-action-scheduler/actions/workflows/demo.yml)
+[![Tests](https://github.com/JustinDFuller/github-action-scheduler/actions/workflows/tests.yml/badge.svg)](https://github.com/JustinDFuller/github-action-scheduler/actions/workflows/tests.yml)
 
 Github Action to run a Schedule.
 
@@ -125,7 +126,7 @@ The schema for the schedule JSON is in [`config.ts`](./config.ts).
 
 Here is a sample Workflow YAML Configuration. It shows:
 
-1. How to run the schedule on a cron timer, when pushing to a branch, or manually using workflow dispatch. 
+1. How to run the schedule on a cron timer, when pushing to a branch, or manually using workflow dispatch.
 2. How to pass in the scheduled stored as a Github Variable.
 3. How to access the outputs.
 
@@ -152,7 +153,7 @@ jobs:
         uses: JustinDFuller/schedule@v2
         with:
           config: ${{ vars.SCHEDULE }} # Pass in the Schedule Variable
-    
+
       # Print the outputs of the above example schedule.
       - run: echo steps.schedule.outputs.UNLOCK=${{ steps.schedule.outputs.UNLOCK }}
       - run: echo steps.schedule.outputs.LOCK_WEEKENDS=${{ steps.schedule.outputs.LOCK_WEEKENDS }}
