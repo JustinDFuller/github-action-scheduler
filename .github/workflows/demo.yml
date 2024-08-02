@@ -13,9 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-
       - name: Schedule Branch Lock
         id: schedule
         uses: JustinDFuller/github-action-scheduler@v7

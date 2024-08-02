@@ -1,0 +1,26 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Schedule:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Schedule Branch Lock
+        id: schedule
+        uses: JustinDFuller/github-action-scheduler@v7
+        with:
+          config: ${{ vars.SCHEDULE }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+      - run: npm ci
+      - run: npm run test
