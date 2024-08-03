@@ -66,13 +66,13 @@ export function process(
 
       for (const date of schedule.dates) {
         const start = dayjs(date, validDateFormats, true /* strict parsing */)
-          .tz(config.timeZone)
+          .tz(config.timeZone, true)
           .add(schedule.startHour, "hour")
           .add(schedule.startMinute || 0, "minute")
           .add(schedule.startSecond || 0, "second");
 
         const end = dayjs(date, validDateFormats, true /* strict parsing */)
-          .tz(config.timeZone)
+          .tz(config.timeZone, true)
           .add(schedule.endHour, "hour")
           .add(schedule.endMinute || 0, "minute")
           .add(schedule.endSecond || 0, "second");

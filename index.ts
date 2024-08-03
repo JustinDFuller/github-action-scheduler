@@ -47,6 +47,7 @@ async function main() {
 
     core.debug(`Parsed Config: ${JSON.stringify(config, null, 2)}`);
 
+    dayjs.tz.setDefault(config.timeZone || "America/New_York");
     process(dayjs(), config, logger);
   } catch (error) {
     core.setFailed(error.message);

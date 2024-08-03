@@ -14,6 +14,8 @@ dayjs.extend(customParseFormat);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
+dayjs.tz.setDefault("America/New_York");
+
 type Test = {
   name: string;
   now: dayjs.Dayjs;
@@ -96,6 +98,19 @@ const tests: Test[] = [
   {
     name: "matches early dismissal",
     now: dayjs.tz("2024-08-09T15:00:00", "America/New_York"),
+    expected: true,
+    wantScheduleMatch: "LOCK_EARLY_DISMISSAL",
+  },
+  {
+    name: "matches early dismissal in GMT",
+    now: dayjs()
+      .year(2024)
+      .month(7)
+      .date(9)
+      .hour(18)
+      .minute(0)
+      .second(0)
+      .tz("GMT", true),
     expected: true,
     wantScheduleMatch: "LOCK_EARLY_DISMISSAL",
   },
