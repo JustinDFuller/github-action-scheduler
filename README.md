@@ -150,7 +150,7 @@ jobs:
 
       - name: Schedule Branch Lock
         id: schedule # Make sure to give it an ID
-        uses: JustinDFuller/schedule@v2
+        uses: JustinDFuller/github-action-scheduler@v0
         with:
           config: ${{ vars.SCHEDULE }} # Pass in the Schedule Variable
 
